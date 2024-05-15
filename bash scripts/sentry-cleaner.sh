@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # This script removes kafka & zookeeper volumes + postgres public.nodestore_node table which are safe to clean.
+# PLACE THIS SCRIPT NEXT TO SENTRY docker-compose.yml.
 df_output=$(df -h)
 root_line=$(echo "$df_output" | grep root)
 available_space_before_cleanup=$(echo "$root_line" | awk '{print $4}')
