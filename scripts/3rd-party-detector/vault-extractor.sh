@@ -2,11 +2,14 @@
 
 # This script extracts URLs from every projects it finds in vault and saves them in 'vault-url.log'.
 # PLACE THIS SCRIPT NEXT TO WHERE THERE ARE A LOT OF GIT PROJECTS.
+# initialize
 export VAULT_ADDR="<vault-address>"
 export VAULT_TOKEN="<vault-token>"
 results=""
 > vault-url.log
 num_cores=$(nproc)
+
+# fetch vault data
 function vault_kv() {
   local dir="$1"
   dir_name="${dir##*/}"
@@ -28,6 +31,7 @@ wait
 tput el
 echo "Finished fetching all projects vault data!"
 
+# cleanup
 echo -ne "Looking for URLs\r"
 file="vault-http.json"
 urls=$(grep -P "http[s]://([^>]+)" "$file" 2>&1)
@@ -39,7 +43,7 @@ grep -E 'http://|https://' extractor.log | while read -r line; do
     if [[ ! $extracted_line =~ apache.org ]] &&
 		[[ ! $extracted_line =~ amazonaws.com ]] &&
 		[[ ! $extracted_line =~ bit.ly ]] &&
-# more  [[ ! $extracted_line =~ whatever.com ]] &&
+    # more  [[ ! $extracted_line =~ whatever.com ]] &&
 		[[ ! $extracted_line =~ bitnami.com ]] then
         echo "$extracted_line" >> cleaner.json
     fi
