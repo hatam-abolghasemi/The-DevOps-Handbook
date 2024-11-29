@@ -1,0 +1,32 @@
+---
+- name: Ensure backup directory exists
+  ansible.builtin.file:
+    path: "{{ haproxy_backup_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Delete old test config if exists
+  ansible.builtin.file:
+    path: "{{ haproxy_backup_dir }}/haproxy-test.cfg"
+    state: absent
+  ignore_errors: true
+
+- name: Copy new configuration to backup directory
+  ansible.builtin.template:
+    src: ./haproxy.cfg.j2
+    dest: "{{ haproxy_backup_dir }}/haproxy-test.cfg"
+    mode: '0644'
+
+- name: Validate new configuration file
+  command: haproxy -c -V -f {{ haproxy_backup_dir }}/haproxy-test.cfg
+  register: haproxy_validation
+  ignore_errors: true
+
+- name: Show validation test result
+  debug:
+    msg: "Your new configuration syntax test result: {{ haproxy_validation.stdout }}"
+
+- name: Fail if the new configuration file is invalid
+  ansible.builtin.fail:
+    msg: "{{ haproxy_validation.stdout }}"
+  when: "'Configuration file is valid' not in haproxy_validation.stdout"

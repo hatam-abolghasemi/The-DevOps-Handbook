@@ -1,0 +1,19 @@
+---
+- name: Main playbook for CoreDNS configuration management
+  hosts: all
+  become: yes
+  vars:
+    configuration_dir: "/etc/coredns"
+    backup_dir: "/home/hatam/ansible"
+    
+  tasks:
+    - name: Run pre-configure playbook
+      include_tasks: ./tasks/pre-configure.yaml
+
+    - name: Run configure playbook
+      include_tasks: ./tasks/configure.yaml
+      ignore_errors: true
+
+    - name: Run post-configure playbook
+      include_tasks: ./tasks/post-configure.yaml
+      ignore_errors: true

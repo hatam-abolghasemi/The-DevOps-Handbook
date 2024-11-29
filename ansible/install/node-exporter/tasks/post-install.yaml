@@ -1,0 +1,45 @@
+---
+- name: Check if node-exporter service is enabled and running
+  ansible.builtin.systemd:
+    name: node-exporter
+    state: started
+    enabled: yes        
+  register: node_exporter_service_status
+
+- name: Verify that node-exporter is listening on port {{ node_exporter_port }}
+  ansible.builtin.wait_for:
+    host: localhost
+    port: "{{ node_exporter_port }}"
+    state: started
+    timeout: 5
+  register: port_check
+
+- name: Fail if node-exporter service is not running or port {{ node_exporter_port }} is not in use
+  ansible.builtin.fail:
+    msg: "Node Exporter service is not running or not listening on port {{ node_exporter_port }}."
+  when: >
+    node_exporter_service_status.state != 'started' or
+    port_check.state != 'started'
+
+- name: Clean up tarball file
+  ansible.builtin.file:
+    path: "{{ node_exporter_tmp_dir }}/node_exporter.tar.gz"
+    state: absent
+
+- name: Clean up extraction directory
+  ansible.builtin.file:
+    path: "{{ node_exporter_tmp_dir }}"
+    state: absent
+
+- name: Display node-exporter service status
+  debug:
+    msg: >
+      Node Exporter service status:
+      - Enabled: {{ node_exporter_service_status.enabled | default('unknown') }}
+      - State: {{ node_exporter_service_status.state | default('unknown') }}
+  when: node_exporter_service_status is defined
+
+- name: Display port check result
+  debug:
+    msg: "Port {{ node_exporter_port }} is {{ port_check.state }}"
+  when: port_check is defined

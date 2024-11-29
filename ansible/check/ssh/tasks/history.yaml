@@ -1,0 +1,29 @@
+---
+- name: Create history report directory for each destination machine on source machine
+  file:
+    path: "{{ history_report_directory }}/{{ inventory_hostname }}"
+    state: directory
+    mode: '0755'
+  delegate_to: localhost
+
+- name: Fetch root user's .bash_history to the source machine and rename to root
+  copy:
+    src: /root/.bash_history
+    dest: "{{ history_report_directory }}/{{ inventory_hostname }}/root"
+    flat: yes
+  ignore_errors: true
+
+- name: Locate user home directories under /home on the destination machine
+  find:
+    paths: /home
+    file_type: directory
+  register: user_home_dirs
+
+- name: Fetch .bash_history from user home directories to the source machine if present
+  copy:
+    src: "{{ item.path }}/.bash_history"
+    dest: "{{ history_report_directory }}/{{ inventory_hostname }}/{{ item.path | basename }}"
+    flat: yes
+  ignore_errors: true
+  when: item.path is search(".bash_history")
+  loop: "{{ user_home_dirs.files }}"

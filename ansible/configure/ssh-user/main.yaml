@@ -1,0 +1,25 @@
+---
+- name: Manage user configurations
+  hosts: all
+  become: true
+  vars:
+    actions:            # Do not use DELETE with other actions.
+      - "CREATE"
+      - "PASSWORD"
+      - "PUBLICKEY"
+    username: "jackson"
+    sudo: "true"
+    hashed_password: "$y$j9T...UPDATE.ME"
+    ssh_public_key: "ssh-rsa AA...UPDATE.ME"
+    new_username: "jackson-baboli"
+
+  tasks:
+    - name: Validate actions
+      fail:
+        msg: "Invalid action. Supported actions are: CREATE, PASSWORD, PUBLICKEY, RENAME, DELETE."
+      when: item not in ['CREATE', 'PASSWORD', 'PUBLICKEY', 'RENAME', 'DELETE']
+      loop: "{{ actions }}"
+      
+    - name: Include the task file based on each action
+      include_tasks: "tasks/{{ item | lower }}.yaml"
+      loop: "{{ actions }}"

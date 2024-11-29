@@ -1,0 +1,17 @@
+---
+- name: Deploy and configure service-exporter
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create service-exporter service file
+      template:
+        src: service-exporter.service.j2
+        dest: /etc/systemd/system/service-exporter.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd daemon and restart service
+      shell: |
+        systemctl daemon-reload
+        systemctl restart service-exporter.service

@@ -1,0 +1,17 @@
+---
+- name: Check HAProxy service status
+  ansible.builtin.systemd:
+    name: haproxy
+    state: started
+  register: haproxy_service_status
+  ignore_errors: true
+
+- name: Fail if HAProxy service is not active
+  ansible.builtin.fail:
+    msg: "HAProxy service is not active. Current status: {{ haproxy_service_status.status.ActiveState }}"
+  when: haproxy_service_status.status.ActiveState != "active"
+
+- name: Display message if everything is finished successfully
+  debug:
+    msg: "Your new valid configuration is applied successfully, and HAProxy service status is active(running)."
+  when: haproxy_service_status.status.ActiveState == "active"

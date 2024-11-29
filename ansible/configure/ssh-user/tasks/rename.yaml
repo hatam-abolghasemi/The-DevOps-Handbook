@@ -1,0 +1,33 @@
+---
+- name: Check if user exists
+  command: id -u "{{ username }}"
+  register: user_check
+  failed_when: user_check.rc != 0
+
+- name: Rename the user
+  command: usermod -l "{{ new_username }}" "{{ username }}"
+
+- name: Rename the home directory
+  command: mv "/home/{{ username }}" "/home/{{ new_username }}"
+  when: user_check.rc == 0
+
+- name: Update the user's home directory in the system
+  user:
+    name: "{{ new_username }}"
+    home: "/home/{{ new_username }}"
+  when: user_check.rc == 0
+
+- name: Verify user renaming
+  command: id -u "{{ new_username }}"
+  register: rename_check
+  failed_when: rename_check.rc != 0
+
+- name: Verify home directory renaming
+  stat:
+    path: "/home/{{ new_username }}"
+  register: home_dir_check
+  failed_when: home_dir_check.stat.exists == false
+
+- name: Report renaming success
+  debug:
+    msg: "User '{{ username }}' has been successfully renamed to '{{ new_username }}' and home directory has been updated."

@@ -1,0 +1,17 @@
+---
+- name: Identify users in /etc/passwd
+  shell: "cat {{ passwd_path }} | grep -v -E '/usr/sbin/nologin|/bin/false|/bin/sync'"
+  register: users
+  ignore_errors: true
+
+- name: Extract usernames of users
+  set_fact:
+    usernames: "{{ users.stdout_lines | map('regex_replace', ':.+', '') | list }}"
+
+- name: Record users in the report file on the source machine
+  local_action:
+    module: lineinfile
+    path: "{{ passwd_report_file }}"
+    line: "Users on {{ inventory_hostname }}:\n{{ users.stdout }}\n"
+  delegate_to: localhost
+  when: users.stdout | length > 0

@@ -1,0 +1,7 @@
+# sample Corefile to show how the logging format should be so the exporter can work.
+
+. {
+    ...
+    log . "Domain: {name} | Source: {remote}:{port} | Duration: {duration} | ReqType: {type} | ReqSize: {size} | ResCode: {rcode} | ResSize: {rsize}"
+    ...
+}

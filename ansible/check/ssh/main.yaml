@@ -1,0 +1,58 @@
+---
+- name: Main playbook for checking ssh users
+  hosts: all
+  become: yes
+  vars:
+    passwd_path: "/etc/passwd"
+    shadow_path: "/etc/shadow"
+    logs_directory: "./logs"
+    w_report_file: "./logs/w.log"
+    passwd_report_file: "./logs/passwd.log"
+    shadow_report_file: "./logs/shadow.log"
+    groups_report_file: "./logs/groups.log"
+    lastlog_report_file: "./logs/lastlog.log"
+    history_report_directory: "./history" 
+
+  tasks:
+    - name: Ensure history report and logs directories exist
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - "{{ history_report_directory }}"
+        - "{{ logs_directory }}"
+      delegate_to: localhost
+      run_once: true
+
+    - name: Ensure report files exist in the logs directory and clean them
+      local_action:
+        module: shell
+        cmd: |
+          for file in "{{ w_report_file }}" "{{ passwd_report_file }}" "{{ shadow_report_file }}" "{{ groups_report_file }}" "{{ lastlog_report_file }}"; do
+            if [ -f "$file" ]; then
+              > "$file"  # Clear the contents of the file if it exists
+            else
+              touch "$file"  # Create the file if it doesn't exist
+            fi
+          done
+      delegate_to: localhost
+      run_once: true
+
+    # - name: Run passwd playbook 
+    #   include_tasks: ./tasks/passwd.yaml
+
+    # - name: Run shadow playbook 
+    #   include_tasks: ./tasks/shadow.yaml
+
+    # - name: Run groups playbook 
+    #   include_tasks: ./tasks/groups.yaml
+
+    # - name: Run w playbook 
+    #   include_tasks: ./tasks/w.yaml
+
+    - name: Run lastlog playbook 
+      include_tasks: ./tasks/lastlog.yaml
+
+    # - name: Run history playbook 
+    #   include_tasks: ./tasks/history.yaml

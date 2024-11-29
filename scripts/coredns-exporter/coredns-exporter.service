@@ -1,0 +1,20 @@
+[Unit]
+Description=CoreDNS Exporter
+After=network.target
+
+[Service]
+User=hatam
+Group=hatam
+WorkingDirectory=/home/hatam/coredns-exporter
+Environment=VIRTUAL_ENV=/home/hatam/coredns-exporter/venv
+ExecStart=/bin/bash -c "source $VIRTUAL_ENV/bin/activate && exec python3 /home/hatam/coredns-exporter/app.py"
+ExecStop=/bin/bash -c "kill $(ps aux | grep '[p]ython3 /home/hatam/coredns-exporter/app.py' | awk '{print $2}')"
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+

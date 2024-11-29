@@ -1,0 +1,24 @@
+---
+- name: Update node-exporter-tuned app.py from template and restart service
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Check if app.py exists
+      stat:
+        path: /home/hatam/node-exporter-tuned/app.py
+      register: app_file
+
+    - name: Update app.py content from template
+      template:
+        src: app.py.j2
+        dest: /home/hatam/node-exporter-tuned/app.py
+        owner: hatam
+        group: hatam
+        mode: '0644'
+      when: app_file.stat.exists
+
+    - name: Restart node-exporter-tuned service
+      systemd:
+        name: node-exporter-tuned
+        state: restarted

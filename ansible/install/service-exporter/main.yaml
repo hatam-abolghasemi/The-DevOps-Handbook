@@ -1,0 +1,56 @@
+---
+- name: Deploy and configure service-exporter
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create directory for service-exporter
+      file:
+        path: /home/hatam/service-exporter
+        state: directory
+        owner: hatam
+        group: hatam
+        mode: '0755'
+
+    - name: Create app.py file from template
+      template:
+        src: app.py.j2
+        dest: /home/hatam/service-exporter/app.py
+        owner: hatam
+        group: hatam
+        mode: '0644'
+
+    - name: Create requirements.txt file from template
+      template:
+        src: requirements.txt.j2
+        dest: /home/hatam/service-exporter/requirements.txt
+        owner: hatam
+        group: hatam
+        mode: '0644'
+
+    - name: Create service-exporter service file
+      template:
+        src: service-exporter.service.j2
+        dest: /etc/systemd/system/service-exporter.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Create Python virtual environment
+      ansible.builtin.command:
+        cmd: python3 -m venv /home/hatam/service-exporter/venv
+      args:
+        chdir: /home/hatam/service-exporter
+      become_user: hatam
+
+    - name: Install dependencies in the virtual environment
+      ansible.builtin.pip:
+        requirements: /home/hatam/service-exporter/requirements.txt
+        virtualenv: /home/hatam/service-exporter/venv
+        virtualenv_command: python3 -m venv
+      become_user: hatam
+
+    - name: Reload systemd daemon and enable service
+      shell: |
+        systemctl daemon-reload
+        systemctl enable service-exporter.service --now
+        systemctl restart service-exporter.service

@@ -1,0 +1,22 @@
+---
+- name: Check if user exists
+  command: id -u "{{ username }}"
+  register: user_check
+  failed_when: user_check.rc != 0
+
+- name: Delete the user without removing the home directory
+  user:
+    name: "{{ username }}"
+    state: absent
+    remove: no
+  when: user_check.rc == 0
+
+- name: Verify user deletion
+  command: id -u "{{ username }}"
+  register: delete_check
+  failed_when: delete_check.rc == 0
+  changed_when: false
+
+- name: Report user deletion success
+  debug:
+    msg: "User '{{ username }}' has been successfully deleted, but the home directory has been retained."

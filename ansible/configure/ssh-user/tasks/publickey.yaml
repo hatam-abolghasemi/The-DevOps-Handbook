@@ -1,0 +1,39 @@
+---
+- name: Check if user exists
+  command: id -u "{{ username }}"
+  register: user_check
+  failed_when: user_check.rc != 0
+
+- name: Ensure .ssh directory exists
+  file:
+    path: "/home/{{ username }}/.ssh"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0700"
+  when: user_check.rc == 0
+
+- name: Ensure authorized_keys file exists
+  file:
+    path: "/home/{{ username }}/.ssh/authorized_keys"
+    state: touch  # Creates the file if it doesn't exist
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0600"
+  when: user_check.rc == 0
+
+- name: Add or update the authorized key
+  lineinfile:
+    path: "/home/{{ username }}/.ssh/authorized_keys"
+    line: "{{ ssh_public_key }}"
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    mode: "0600"
+    state: present
+  when: user_check.rc == 0
+
+- name: Verify SSH key update
+  shell: grep "{{ ssh_public_key }}" /home/{{ username }}/.ssh/authorized_keys
+  register: ssh_key_check
+  failed_when: ssh_key_check.rc != 0
+  when: user_check.rc == 0

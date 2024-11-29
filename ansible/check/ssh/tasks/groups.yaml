@@ -1,0 +1,27 @@
+---
+- name: Identify users from /etc/passwd
+  shell: "cat {{ passwd_path }} | grep -v -E '/usr/sbin/nologin|/bin/false|/bin/sync'"
+  register: non_standart_users
+  ignore_errors: true
+
+- name: Extract usernames of users
+  set_fact:
+    usernames: "{{ non_standart_users.stdout_lines | map('regex_replace', ':.+', '') | list }}"
+
+- name: Check sudo group membership for users (excluding root)
+  shell: |
+    for user in {{ usernames | join(' ') }}; do
+      if [ "$user" != "root" ]; then
+        groups $user | grep sudo || true;
+      fi
+    done
+  register: group_info
+  when: usernames | length > 0
+
+- name: Log group membership information to report on the source machine
+  local_action:
+    module: lineinfile
+    path: "{{ groups_report_file }}"
+    line: "Group info for users on {{ inventory_hostname }}:\n{{ group_info.stdout }}\n"
+  delegate_to: localhost
+  when: group_info.stdout != ""

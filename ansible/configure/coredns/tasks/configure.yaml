@@ -1,0 +1,50 @@
+---
+- name: Update configuration
+  ansible.builtin.template:
+    src: ./example.com.zone.j2
+    dest: "{{ configuration_dir }}/example.com.zone"
+    mode: '0644'
+
+- name: Reload CoreDNS service
+  ansible.builtin.systemd:
+    name: coredns
+    state: reloaded
+
+- name: Check CoreDNS service status
+  ansible.builtin.systemd:
+    name: coredns
+    state: started
+  register: coredns_service_status
+  ignore_errors: true
+
+- name: Set force_restore flag
+  set_fact:
+    force_restore: true
+  when: coredns_service_status.status.ActiveState != "active"
+
+- name: Restore current configuration
+  ansible.builtin.copy:
+    src: "{{ backup_dir }}/example.com.zone.tmp"
+    dest: "{{ configuration_dir }}/example.com.zone"
+    remote_src: yes
+    mode: '0644'
+  when: force_restore | default(false)
+
+- name: Reload CoreDNS service
+  ansible.builtin.systemd:
+    name: coredns
+    state: reloaded
+  when: force_restore | default(false)
+
+- name: Check CoreDNS service status
+  ansible.builtin.systemd:
+    name: coredns
+    state: started
+  register: coredns_service_status
+  ignore_errors: true
+  when: force_restore | default(false)
+
+- name: Problem with new configuration
+  ansible.builtin.fail:
+    msg: "Your new configuration has a problem. restored to previous version successfully."
+  when: force_restore | default(false)

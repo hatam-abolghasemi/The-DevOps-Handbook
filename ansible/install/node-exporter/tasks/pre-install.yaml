@@ -1,0 +1,36 @@
+---
+- name: Check if port {{ node_exporter_port }} is in use and by which process
+  shell: |
+    sudo netstat -tulnp | grep ":{{ node_exporter_port }} " || true
+  register: port_check_output
+  changed_when: false
+
+- name: Set node_exporter_installed to true if port {{ node_exporter_port }} is in use
+  set_fact:
+    node_exporter_installed: true
+  when: port_check_output.stdout != ""
+
+- name: Display the process using port {{ node_exporter_port }} (if any)
+  debug:
+    msg: "{{ port_check_output.stdout }}"
+  when: port_check_output.stdout != ""
+
+- name: Check if a systemd service exists for node-exporter or node_exporter
+  shell: |
+    systemctl list-units --full --all | grep -E 'node[-_]exporter' || true
+  register: systemd_service_check
+  changed_when: false
+
+- name: Set node_exporter_installed to true if systemd service found
+  set_fact:
+    node_exporter_installed: true
+  when: systemd_service_check.stdout != ""
+
+- name: Display found systemd services for node-exporter
+  debug:
+    msg: "{{ systemd_service_check.stdout }}"
+  when: systemd_service_check.stdout != ""
+
+- name: Set the fact for node_exporter_installed
+  debug:
+    msg: "Node Exporter is already installed: {{ node_exporter_installed }}"

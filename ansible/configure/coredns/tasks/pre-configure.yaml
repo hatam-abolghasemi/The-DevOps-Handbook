@@ -1,0 +1,26 @@
+---
+- name: Ensure backup directory exists
+  ansible.builtin.file:
+    path: "{{ backup_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Backup current configuration
+  ansible.builtin.copy:
+    src: "{{ configuration_dir }}/example.com.zone"
+    dest: "{{ backup_dir }}/example.com.zone.{{ ansible_date_time.iso8601 }}"
+    remote_src: yes
+    mode: '0644'
+
+- name: Delete old temporary config if exists
+  ansible.builtin.file:
+    path: "{{ backup_dir }}/example.com.zone.tmp"
+    state: absent
+  ignore_errors: true
+
+- name: Backup current configuration temporarily
+  ansible.builtin.copy:
+    src: "{{ configuration_dir }}/example.com.zone"
+    dest: "{{ backup_dir }}/example.com.zone.tmp"
+    remote_src: yes
+    mode: '0644'

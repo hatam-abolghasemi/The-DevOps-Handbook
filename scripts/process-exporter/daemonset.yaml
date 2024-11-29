@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: process-exporter
+  namespace: monitoring
+  labels:
+    app: process-exporter
+    role: exporter
+spec:
+  selector:
+    matchLabels:
+      app: process-exporter
+      role: exporter
+  template:
+    metadata:
+      labels:
+        app: process-exporter
+        role: exporter
+    spec:
+      containers:
+      - image: harbor.example.com/scripts/process-exporter:1.0.1
+        name: process-exporter
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9102
+          hostPort: 9102
+          name: metrics
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 50Mi
+          requests:
+            cpu: 50m
+            memory: 20Mi
+      hostNetwork: true
+      hostPID: true
+      restartPolicy: Always
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      - effect: NoExecute
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /
+        name: root

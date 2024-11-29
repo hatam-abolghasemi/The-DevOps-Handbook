@@ -1,0 +1,84 @@
+import subprocess
+from prometheus_client import start_http_server, Gauge, REGISTRY
+import time
+import re
+
+# Define Prometheus metrics with 'pid' as a label
+cpu_gauge = Gauge('process_cpu', 'CPU Usage in percentage', ['user', 'command', 'pid'])
+mem_gauge = Gauge('process_mem', 'Memory Usage in percentage', ['user', 'command', 'pid'])
+rss_gauge = Gauge('process_rss', 'Resident Set Size (RSS)', ['user', 'command', 'pid'])
+
+def parse_ps_output():
+    # Clear existing labels before updating to prevent appending old metrics
+    cpu_gauge.clear()
+    mem_gauge.clear()
+    rss_gauge.clear()
+
+    # Run the 'ps' command for memory usage, sorted by %mem
+    result_mem = subprocess.run(['ps', '-eo', 'pid,user,%cpu,%mem,rss,comm', '--sort=-%mem'], stdout=subprocess.PIPE)
+    output_mem = result_mem.stdout.decode('utf-8').splitlines()
+
+    # Run the 'ps' command for CPU usage, sorted by %cpu
+    result_cpu = subprocess.run(['ps', '-eo', 'pid,user,%cpu,%mem,rss,comm', '--sort=-%cpu'], stdout=subprocess.PIPE)
+    output_cpu = result_cpu.stdout.decode('utf-8').splitlines()
+
+    # Run the 'ps' command for RSS usage, sorted by rss
+    result_rss = subprocess.run(['ps', '-eo', 'pid,user,%cpu,%mem,rss,comm', '--sort=-rss'], stdout=subprocess.PIPE)
+    output_rss = result_rss.stdout.decode('utf-8').splitlines()
+
+    # Parse the output and keep top 20 processes for each metric
+    processes_mem = parse_ps_lines(output_mem)
+    processes_cpu = parse_ps_lines(output_cpu)
+    processes_rss = parse_ps_lines(output_rss)
+
+    # Update Prometheus gauges
+    for pid, user, cpu, mem, rss, command in processes_mem:
+        mem_gauge.labels(user=user, command=command, pid=pid).set(mem)
+    for pid, user, cpu, mem, rss, command in processes_cpu:
+        cpu_gauge.labels(user=user, command=command, pid=pid).set(cpu)
+    for pid, user, cpu, mem, rss, command in processes_rss:
+        rss_gauge.labels(user=user, command=command, pid=pid).set(rss)
+
+def parse_ps_lines(output):
+    """Parse the output of `ps` command into structured data."""
+    processes = []
+    for line in output[1:]:  # Skip header
+        # Use regex to split into fields and handle cases where command has spaces
+        match = re.match(r"(\d+)\s+(\S+)\s+([\d.]+)\s+([\d.]+)\s+(\d+)\s+(.+)", line)
+        if match:
+            pid, user, cpu, mem, rss, command = match.groups()
+            processes.append((int(pid), user, float(cpu), float(mem), int(rss), command.strip()))
+    return processes[:10] 
+
+def deregister_unwanted_metrics():
+    # Remove Python's default exporter-related metrics
+    unwanted_metrics = [
+        'python_gc_objects_uncollectable_total',
+        'python_gc_collections_total',
+        'python_info',
+        'process_virtual_memory_bytes',
+        'process_resident_memory_bytes',
+        'process_start_time_seconds',
+        'process_cpu_seconds_total',
+        'process_open_fds',
+        'process_max_fds'
+    ]
+    # Unregister metrics
+    for metric_name in unwanted_metrics:
+        if metric_name in REGISTRY._names_to_collectors:
+            REGISTRY.unregister(REGISTRY._names_to_collectors[metric_name])
+
+def run_exporter():
+    deregister_unwanted_metrics()
+    # Start Prometheus server on port 9102
+    start_http_server(9102)
+    print("Prometheus exporter started at http://0.0.0.0:9102")
+    
+    # Update metrics every 5 seconds
+    while True:
+        parse_ps_output()
+        time.sleep(5)
+
+if __name__ == '__main__':
+    run_exporter()
+

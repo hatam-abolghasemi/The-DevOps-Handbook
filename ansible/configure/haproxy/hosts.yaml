@@ -1,0 +1,4 @@
+all:
+  children:
+    edge_haproxy:
+      hosts:

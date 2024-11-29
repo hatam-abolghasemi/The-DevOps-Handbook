@@ -1,0 +1,18 @@
+[Unit]
+Description=Process Exporter
+After=network.target
+
+[Service]
+User=hatam
+Group=hatam
+WorkingDirectory=/home/hatam/process-exporter
+Environment=VIRTUAL_ENV=/home/hatam/process-exporter/venv
+ExecStart=/bin/bash -c "source $VIRTUAL_ENV/bin/activate && exec python3 /home/hatam/process-exporter/app.py"
+ExecStop=/bin/bash -c "kill $(ps aux | grep '[p]ython3 /home/hatam/process-exporter/app.py' | awk '{print $2}')"
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target

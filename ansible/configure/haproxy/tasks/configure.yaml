@@ -1,0 +1,19 @@
+---
+- name: Backup current configuration
+  ansible.builtin.copy:
+    src: "{{ haproxy_configuration_dir }}/haproxy.cfg"
+    dest: "{{ haproxy_backup_dir }}/haproxy.cfg.{{ ansible_date_time.iso8601 }}"
+    remote_src: yes
+    mode: '0644'
+
+- name: Update configuration
+  ansible.builtin.copy:
+    src: "{{ haproxy_backup_dir }}/haproxy-test.cfg"
+    dest: "{{ haproxy_configuration_dir }}/haproxy.cfg"
+    remote_src: yes
+    mode: '0644'
+
+- name: Reload HAProxy service
+  ansible.builtin.systemd:
+    name: haproxy
+    state: reloaded

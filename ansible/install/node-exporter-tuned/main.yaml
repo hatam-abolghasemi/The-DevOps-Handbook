@@ -1,0 +1,150 @@
+---
+- name: Setup Node Exporter Tuned Service
+  hosts: all
+  become: yes
+  vars:
+    user: "hatam"
+    home_dir: "/home/{{ user }}"
+    service_name: "node-exporter-tuned"
+    working_dir: "{{ home_dir }}/{{ service_name }}"
+    service_file: "/etc/systemd/system/{{ service_name }}.service"
+    requirements_content: |
+      flask
+      requests
+    app_file_content: |
+      from flask import Flask, Response
+      import requests
+      import time
+      import threading
+
+      METRICS = [
+          "node_cpu_seconds_total", "node_memory_MemAvailable_bytes", "node_memory_MemTotal_bytes",
+          "node_network_receive_bytes_total", "node_network_transmit_bytes_total", "node_load1",
+          "node_time_seconds", "node_boot_time_seconds", "node_filesystem_size_bytes",
+          "node_filesystem_avail_bytes", "node_context_switches_total", "node_intr_total",
+          "node_disk_reads_completed_total", "node_disk_writes_completed_total", "node_procs_running",
+          "node_procs_blocked", "node_forks_total"
+      ]
+
+      filtered_metrics = ""
+
+      app = Flask(__name__)
+
+      @app.route('/metrics', methods=['GET'])
+      def serve_metrics():
+          global filtered_metrics
+          return Response(filtered_metrics, mimetype='text/plain')
+
+      def fetch_metrics():
+          global filtered_metrics
+          while True:
+              try:
+                  response = requests.get("http://0.0.0.0:9100/metrics")
+                  if response.status_code == 200:
+                      lines = response.text.splitlines()
+                      filtered_lines = []
+                      for metric in METRICS:
+                          for i, line in enumerate(lines):
+                              if (
+                                  line.startswith(f"# HELP {metric}") or
+                                  line.startswith(f"# TYPE {metric}") or
+                                  (line.startswith(metric) and not line.startswith(f"# "))
+                              ):
+                                  filtered_lines.append(line)
+                      filtered_metrics = "\n".join(filtered_lines)
+              except Exception as e:
+                  print(f"Error fetching metrics: {e}")
+              time.sleep(1)
+
+      if __name__ == '__main__':
+          threading.Thread(target=fetch_metrics, daemon=True).start()
+          app.run(host="0.0.0.0", port=9101)
+
+    service_file_content: |
+      [Unit]
+      Description=Node Exporter TUNED
+      After=network.target
+
+      [Service]
+      User={{ user }}
+      Group={{ user }}
+      WorkingDirectory={{ working_dir }}
+      Environment=VIRTUAL_ENV={{ working_dir }}/venv
+      ExecStart=/bin/bash -c "source $VIRTUAL_ENV/bin/activate && exec python3 {{ working_dir }}/app.py"
+      ExecStop=/bin/bash -c "kill $(ps aux | grep '[p]ython3 {{ working_dir }}/app.py' | awk '{print $2}')"
+      Restart=always
+      RestartSec=5
+      KillSignal=SIGINT
+      TimeoutStopSec=10
+
+      [Install]
+      WantedBy=multi-user.target
+
+  tasks:
+    - name: Ensure required packages are installed
+      apt:
+        name: python3-venv
+        state: present
+
+    - name: Create working directory
+      file:
+        path: "{{ working_dir }}"
+        state: directory
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: '0755'
+
+    - name: Create requirements.txt
+      copy:
+        dest: "{{ working_dir }}/requirements.txt"
+        content: "{{ requirements_content }}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: '0644'
+
+    - name: Create Python virtual environment
+      command: python3 -m venv "{{ working_dir }}/venv"
+      args:
+        creates: "{{ working_dir }}/venv"
+
+    - name: Install Python dependencies
+      pip:
+        requirements: "{{ working_dir }}/requirements.txt"
+        virtualenv: "{{ working_dir }}/venv"
+        virtualenv_command: python3 -m venv
+        virtualenv_python: python3
+
+    - name: Create app.py
+      copy:
+        dest: "{{ working_dir }}/app.py"
+        content: "{{ app_file_content }}"
+        owner: "{{ user }}"
+        group: "{{ user }}"
+        mode: '0755'
+
+    - name: Create systemd service file
+      copy:
+        dest: "{{ service_file }}"
+        content: "{{ service_file_content }}"
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload systemd daemon
+      command: systemctl daemon-reload
+
+    - name: Enable and start service
+      systemd:
+        name: "{{ service_name }}"
+        enabled: true
+        state: started
+
+    - name: Verify service status
+      command: systemctl status "{{ service_name }}"
+      register: service_status
+      failed_when: "'active (running)' not in service_status.stdout"
+      ignore_errors: true
+
+    - name: Print service status
+      debug:
+        var: service_status.stdout

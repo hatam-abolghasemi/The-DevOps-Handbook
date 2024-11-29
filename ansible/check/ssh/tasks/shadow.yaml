@@ -1,0 +1,22 @@
+---
+- name: Identify users in /etc/passwd
+  shell: "cat {{ passwd_path }} | grep -v -E '/usr/sbin/nologin|/bin/false|/bin/sync'"
+  register: users
+  ignore_errors: true
+
+- name: Extract usernames of users
+  set_fact:
+    usernames: "{{ users.stdout_lines | map('regex_replace', ':.+', '') | list }}"
+
+- name: Retrieve shadow file details for users
+  shell: "cat {{ shadow_path }} | grep -E '{{ usernames | join(\"|\") }}'"
+  register: shadow_info
+  when: usernames | length > 0
+
+- name: Log shadow file information for users to the report on the source machine
+  local_action:
+    module: lineinfile
+    path: "{{ shadow_report_file }}"
+    line: "Shadow info for users on {{ inventory_hostname }}:\n{{ shadow_info.stdout }}\n"
+  delegate_to: localhost
+  when: shadow_info.stdout != ""

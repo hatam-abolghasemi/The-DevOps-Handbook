@@ -1,0 +1,21 @@
+---
+- name: Main playbook for HAProxy configuration management
+  hosts: all
+  become: yes
+  vars:
+    haproxy_configuration_applied: false
+    haproxy_port: 80
+    haproxy_configuration_dir: "/etc/haproxy"
+    haproxy_backup_dir: "/home/hatam/ansible"
+    
+  tasks:
+    - name: Run pre-configure playbook
+      include_tasks: ./tasks/pre-configure.yaml
+
+    - name: Run configure playbook
+      include_tasks: ./tasks/configure.yaml
+      ignore_errors: true
+
+    - name: Run post-configure playbook
+      include_tasks: ./tasks/post-configure.yaml
+      ignore_errors: true

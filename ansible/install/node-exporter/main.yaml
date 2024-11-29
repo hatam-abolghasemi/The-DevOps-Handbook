@@ -1,0 +1,27 @@
+---
+- name: Main playbook for Node Exporter installation
+  hosts: all
+  become: yes
+  vars:
+    node_exporter_installed: false
+    node_exporter_port: 9100
+    node_exporter_version: "1.8.2"
+    node_exporter_binary_url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    node_exporter_tmp_dir: "/home/hatam/tmp/node_exporter"
+    node_exporter_bin_path: "/usr/bin/node_exporter"
+    node_exporter_service_file: "/etc/systemd/system/node-exporter.service"
+    
+  tasks:
+    - name: Run pre-install playbook
+      include_tasks: ./tasks/pre-install.yaml
+
+    - name: Fail if node-exporter is already installed, skipping install
+      ansible.builtin.fail:
+        msg: "Node Exporter is already installed. Skipping installation."
+      when: node_exporter_installed | default(false)
+
+    - name: Run install playbook
+      include_tasks: ./tasks/install.yaml
+
+    - name: Run post-install playbook
+      include_tasks: ./tasks/post-install.yaml

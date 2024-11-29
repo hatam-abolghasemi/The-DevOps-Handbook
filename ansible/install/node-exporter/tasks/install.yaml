@@ -1,0 +1,51 @@
+---
+- name: Ensure node-exporter group exists
+  ansible.builtin.group:
+    name: node-exporter
+
+- name: Ensure node-exporter user exists
+  ansible.builtin.user:
+    name: node-exporter
+    group: node-exporter
+    create_home: no
+    shell: /bin/false
+
+- name: Ensure temporary directory exists
+  ansible.builtin.file:
+    path: "{{ node_exporter_tmp_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Download node-exporter binary
+  ansible.builtin.get_url:
+    url: "{{ node_exporter_binary_url }}"
+    dest: "{{ node_exporter_tmp_dir }}"
+    mode: '0644'
+    force: no
+
+- name: Extract node-exporter binary
+  ansible.builtin.unarchive:
+    src: "{{ node_exporter_tmp_dir }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+    dest: "{{ node_exporter_tmp_dir }}"
+    remote_src: yes
+
+- name: Move node-exporter binary to /usr/bin
+  ansible.builtin.copy:
+    src: "{{ node_exporter_tmp_dir }}/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+    dest: "{{ node_exporter_bin_path }}"
+    mode: '0755'
+    owner: node-exporter
+    group: node-exporter
+    remote_src: yes
+
+- name: Deploy node-exporter systemd service file
+  ansible.builtin.template:
+    src: ./node-exporter.service.j2
+    dest: "{{ node_exporter_service_file }}"
+    mode: '0644'
+
+- name: Ensure node-exporter service is enabled and started
+  ansible.builtin.systemd:
+    name: node-exporter
+    enabled: yes
+    state: restarted

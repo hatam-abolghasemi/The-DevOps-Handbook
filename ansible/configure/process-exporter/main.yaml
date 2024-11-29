@@ -1,0 +1,16 @@
+---
+- name: Deploy and configure process-exporter
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create app.py file from template
+      template:
+        src: app.py.j2
+        dest: /home/hatam/process-exporter/app.py
+        owner: hatam
+        group: hatam
+        mode: '0644'
+
+    - name: Restart service
+      shell: |
+        systemctl restart process-exporter.service

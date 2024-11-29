@@ -1,0 +1,6411 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "$$hashKey": "object:1058",
+        "builtIn": 1,
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Used Jobs:\n- \"harbor-node-exporter\"",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "gnetId": 1860,
+  "graphTooltip": 1,
+  "id": 15,
+  "links": [
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "GitHub",
+      "type": "link",
+      "url": "https://github.com/rfmoz/grafana-dashboards"
+    },
+    {
+      "icon": "external link",
+      "tags": [],
+      "targetBlank": true,
+      "title": "Grafana",
+      "type": "link",
+      "url": "https://grafana.com/grafana/dashboards/1860"
+    }
+  ],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 20,
+      "panels": [],
+      "title": "Overview",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "fdyxn4ek8opogc"
+      },
+      "description": "Resource pressure via PSI",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "links": [],
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "dark-yellow",
+                "value": 70
+              },
+              {
+                "color": "dark-red",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 1
+      },
+      "id": 17,
+      "options": {
+        "displayMode": "basic",
+        "maxVizHeight": 300,
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg(irate(node_pressure_cpu_waiting_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+          "format": "time_series",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "CPU",
+          "range": false,
+          "refId": "CPU some",
+          "step": 240
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg(irate(node_pressure_memory_waiting_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "Mem",
+          "range": false,
+          "refId": "Memory some",
+          "step": 240
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg(irate(node_pressure_io_waiting_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+          "format": "time_series",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "I/O",
+          "range": false,
+          "refId": "I/O some",
+          "step": 240
+        }
+      ],
+      "title": "Pressure",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "fdyxn4ek8opogc"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "links": [],
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 3,
+        "y": 1
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "expr": "avg(100 - (avg by(instance) (irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"idle\"}[5m])) * 100))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "{{nodename}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "CPU Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "fdyxn4ek8opogc"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "links": [],
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 5,
+        "y": 1
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "expr": "avg((1 - ((node_memory_MemAvailable_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}) / (node_memory_MemTotal_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))) * 100)",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Memory Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "fdyxn4ek8opogc"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "rgba(237, 129, 40, 0.89)",
+                "value": 80
+              },
+              {
+                "color": "rgba(245, 54, 54, 0.9)",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 7,
+        "y": 1
+      },
+      "id": 23,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "expr": "avg(100 - ((node_filesystem_avail_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\", mountpoint=\"/\", fstype!=\"rootfs\"} * 100) / node_filesystem_size_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\", mountpoint=\"/\", fstype!=\"rootfs\"}))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "Root",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "Disk Utilization",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "fdyxn4ek8opogc"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bps"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 9,
+        "y": 1
+      },
+      "id": 62,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(node_network_receive_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8)",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Receive",
+          "range": true,
+          "refId": "A",
+          "step": 240
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(node_network_transmit_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8)",
+          "format": "time_series",
+          "hide": false,
+          "intervalFactor": 1,
+          "legendFormat": "Transmit",
+          "range": true,
+          "refId": "B",
+          "step": 240
+        }
+      ],
+      "title": "Traffic Bytes",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "fdyxn4ek8opogc"
+      },
+      "description": "Total RAM",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-purple",
+            "mode": "fixed"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 18,
+        "y": 1
+      },
+      "id": 47,
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(node_memory_MemTotal_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "RAM Total",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "fdyxn4ek8opogc"
+      },
+      "description": "Total number of CPU cores",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "dark-blue",
+            "mode": "fixed"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 20,
+        "y": 1
+      },
+      "id": 3,
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"idle\"})",
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A"
+        }
+      ],
+      "title": "CPU Cores",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": true,
+        "type": "prometheus",
+        "uid": "fdyxn4ek8opogc"
+      },
+      "description": "System uptime",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 22,
+        "y": 1
+      },
+      "hideTimeOverride": true,
+      "id": 19,
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "node_time_seconds{job=\"harbor-node-exporter\", instance=~\"$instance\"} - node_boot_time_seconds{job=\"harbor-node-exporter\", instance=~\"$instance\"}",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "{{instance}}",
+          "range": false,
+          "refId": "A",
+          "step": 240
+        }
+      ],
+      "title": "Uptime",
+      "type": "stat"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 2,
+      "panels": [
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 3,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "yellow"
+                  },
+                  {
+                    "color": "green",
+                    "value": 50
+                  },
+                  {
+                    "color": "orange",
+                    "value": 80
+                  },
+                  {
+                    "color": "dark-orange",
+                    "value": 90
+                  },
+                  {
+                    "color": "dark-red",
+                    "value": 97
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 0,
+            "y": 6
+          },
+          "id": 8,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "100 - (avg by(instance) (irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"idle\"}[5m])) * 100 )",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{nodename}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "CPU Utilization by Instance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "System - Processes executing in kernel mode\nUser - Normal processes executing in user mode\nNice - Niced processes executing in user mode\nIOWait - Waiting for I/O to complete\nIRQ - Servicing interrupts\nSoftIRQ - Servicing softirqs\nSteal - Time spent in other operating systems when running in a virtualized environment\nIdle - Waiting for something to happen",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "percentage",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "smooth",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 1,
+                "pointSize": 3,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "always",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Idle"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#052B51",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "IOWait"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#EAB839",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "IRQ"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#BF1B00",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Nice"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#C15C17",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "SoftIRQ"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Steal"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#FCE2DE",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "System"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#508642",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "User"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#5195CE",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 11,
+            "y": 6
+          },
+          "id": 1,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "desc"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"system\"}[$__rate_interval])) /\r\nscalar(count(count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}) by (cpu)))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "System",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"user\"}[$__rate_interval])) /\r\nscalar(count(count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}) by (cpu)))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "User",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"nice\"}[$__rate_interval])) /\r\nscalar(count(count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}) by (cpu)))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Nice",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=~\"iowait\"}[$__rate_interval])) /\r\nscalar(count(count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}) by (cpu)))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "IOWait",
+              "range": true,
+              "refId": "D"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=~\"irq\"}[$__rate_interval])) /\r\nscalar(count(count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}) by (cpu)))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "IRQ",
+              "range": true,
+              "refId": "E"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"softirq\"}[$__rate_interval])) /\r\nscalar(count(count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}) by (cpu)))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "SoftIRQ",
+              "range": true,
+              "refId": "F"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"steal\"}[$__rate_interval])) /\r\nscalar(count(count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}) by (cpu)))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Steal",
+              "range": true,
+              "refId": "G"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"idle\"}[$__rate_interval])) /\r\nscalar(count(count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}) by (cpu)))",
+              "hide": true,
+              "instant": false,
+              "legendFormat": "Idle",
+              "range": true,
+              "refId": "H"
+            }
+          ],
+          "title": "CPU Utilization by Mode",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "Total number of CPU cores",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "dark-blue",
+                "mode": "fixed"
+              },
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 2,
+            "x": 22,
+            "y": 6
+          },
+          "id": 31,
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "count(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"idle\"})",
+              "instant": true,
+              "legendFormat": "__auto",
+              "range": false,
+              "refId": "A"
+            }
+          ],
+          "title": "CPU Cores",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 2,
+            "x": 22,
+            "y": 9
+          },
+          "id": 30,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg(100 - (avg by(instance) (irate(node_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\", mode=\"idle\"}[5m])) * 100))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{nodename}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Average CPU Utilization",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "counter",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 3,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 0,
+            "y": 15
+          },
+          "id": 27,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "node_load1{job=\"harbor-node-exporter\", instance=~\"$instance\"}",
+              "format": "time_series",
+              "intervalFactor": 4,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "System Load Average 1 minute",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 3,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 11,
+            "y": 15
+          },
+          "id": 37,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "rate(node_pressure_cpu_waiting_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])",
+              "instant": false,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "CPU some by Instance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "super-light-green"
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 2,
+            "x": 22,
+            "y": 15
+          },
+          "id": 32,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg(node_load1{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 4,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "System Load Average 1 minute",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 2,
+            "x": 22,
+            "y": 20
+          },
+          "id": 38,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg(rate(node_pressure_cpu_waiting_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+              "instant": false,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Average CPU some",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "counter",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 0,
+            "y": 24
+          },
+          "id": 25,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "irate(node_context_switches_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "Context Switches by Instance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "counter",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 11,
+            "y": 24
+          },
+          "id": 26,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "irate(node_intr_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "Interrupts by Instance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "light-blue"
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 2,
+            "x": 22,
+            "y": 24
+          },
+          "id": 28,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg(irate(node_context_switches_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "Average Context Switch",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "super-light-blue"
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 2,
+            "x": 22,
+            "y": 29
+          },
+          "id": 29,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg(irate(node_intr_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "Average Interrupt",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "counter",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 3,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 0,
+            "y": 33
+          },
+          "id": 39,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "irate(node_schedstat_timeslices_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} CPU {{ cpu }}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "Schedule timeslices executed by each cpu",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "seconds",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 3,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 11,
+            "y": 33
+          },
+          "id": 40,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "irate(process_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "CPU time spent in user and system contexts",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 2,
+            "x": 22,
+            "y": 33
+          },
+          "id": 42,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg(irate(process_cpu_seconds_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            }
+          ],
+          "title": "Average CPU time spent in user and system contexts",
+          "type": "stat"
+        }
+      ],
+      "title": "CPU",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 6,
+      "panels": [
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 0,
+            "y": 43
+          },
+          "id": 10,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "(1 - ((node_memory_MemAvailable_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}) / (node_memory_MemTotal_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))) * 100",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "B"
+            }
+          ],
+          "title": "Memory Utilization Per Node",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 3,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "super-light-yellow"
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "A"
+                },
+                "properties": [
+                  {
+                    "id": "custom.showPoints",
+                    "value": "never"
+                  },
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "red",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "B"
+                },
+                "properties": [
+                  {
+                    "id": "custom.fillOpacity",
+                    "value": 10
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 11,
+            "x": 11,
+            "y": 43
+          },
+          "id": 49,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "node_memory_MemAvailable_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "avg(node_memory_MemTotal_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "Total",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Memory Available",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "Total RAM",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "dark-purple",
+                "mode": "fixed"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "options": {
+                    "match": "null",
+                    "result": {
+                      "text": "N/A"
+                    }
+                  },
+                  "type": "special"
+                }
+              ],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "B"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "super-light-purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 2,
+            "x": 22,
+            "y": 43
+          },
+          "id": 48,
+          "maxDataPoints": 100,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum(node_memory_MemTotal_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "instant": true,
+              "legendFormat": "Total",
+              "range": false,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "exemplar": false,
+              "expr": "sum(node_memory_MemAvailable_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "hide": false,
+              "instant": true,
+              "legendFormat": "Available",
+              "range": false,
+              "refId": "B"
+            }
+          ],
+          "title": "RAM Total",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 2,
+            "x": 22,
+            "y": 47
+          },
+          "id": 11,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((1 - ((node_memory_MemAvailable_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}) / (node_memory_MemTotal_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))) * 100)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "__auto",
+              "range": true,
+              "refId": "B"
+            }
+          ],
+          "title": "Average Memory Utilization",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "Apps - Memory used by user-space applications\n\nPageTables - Memory used to map between virtual and physical memory addresses\n\nSwapCache - Memory that keeps track of pages that have been fetched from swap but not yet been modified\n\nSlab - Memory used by the kernel to cache data structures for its own use (caches like inode, dentry, etc)\n\nCache - Parked file data (file content) cache\n\nBuffers - Block device (e.g. harddisk) cache\n\nUnused - Free memory unassigned\n\nSwap - Swap space used\n\nHardware Corrupted - Amount of RAM that the kernel identified as corrupted / not working",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "bytes",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Apps"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#629E51",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Buffers"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#614D93",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Cache"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#6D1F62",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Hardware Corrupted"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#CFFAFF",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "PageTables"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#0A50A1",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Slab"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#806EB7",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Swap"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#BF1B00",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Unused"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#EAB839",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 0,
+            "y": 52
+          },
+          "id": 9,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((node_memory_MemTotal_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"} - node_memory_MemFree_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"} - node_memory_Buffers_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"} - node_memory_Cached_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"} - node_memory_Slab_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"} - node_memory_PageTables_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"} - node_memory_SwapCached_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Apps",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((node_memory_PageTables_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "PageTables",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg(node_memory_SwapCached_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "SwapCache",
+              "range": true,
+              "refId": "C",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((node_memory_Slab_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Slab",
+              "range": true,
+              "refId": "D",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((node_memory_Cached_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Cache",
+              "range": true,
+              "refId": "E",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((node_memory_Buffers_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Buffers",
+              "range": true,
+              "refId": "F",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((node_memory_MemFree_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Unused",
+              "range": true,
+              "refId": "G",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((node_memory_SwapTotal_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"} - node_memory_SwapFree_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Swap",
+              "range": true,
+              "refId": "H",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "avg((node_memory_HardwareCorrupted_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"}))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Hardware Corrupted",
+              "range": true,
+              "refId": "I",
+              "step": 240
+            }
+          ],
+          "title": "Memory Stack",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "Inactive_file - File-backed memory on inactive LRU list\n\nInactive_anon - Anonymous and swap cache on inactive LRU list, including tmpfs (shmem)\n\nActive_file - File-backed memory on active LRU list\n\nActive_anon - Anonymous and swap cache on active least-recently-used (LRU) list, including tmpfs",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "bytes",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Apps"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#629E51",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Buffers"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#614D93",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Cache"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#6D1F62",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Cached"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#511749",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Committed"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#508642",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Free"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#0A437C",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Hardware Corrupted - Amount of RAM that the kernel identified as corrupted / not working"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#CFFAFF",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Inactive"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#584477",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "PageTables"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#0A50A1",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Page_Tables"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#0A50A1",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "RAM_Free"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E0F9D7",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Slab"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#806EB7",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Slab_Cache"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E0752D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Swap"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#BF1B00",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Swap_Cache"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#C15C17",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Swap_Free"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#2F575E",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Unused"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#EAB839",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 11,
+            "y": 52
+          },
+          "id": 51,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Inactive_file_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Inactive_file",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Inactive_anon_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Inactive_anon",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Active_file_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Active_file",
+              "range": true,
+              "refId": "C",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Active_anon_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Active_anon",
+              "range": true,
+              "refId": "D",
+              "step": 240
+            }
+          ],
+          "title": "Memory Active / Inactive Detail",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "Inactive - Memory which has been less recently used.  It is more eligible to be reclaimed for other purposes\n\nActive - Memory that has been used more recently and usually not reclaimed unless absolutely necessary",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Inactive"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "super-light-yellow",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Active"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 2,
+            "x": 22,
+            "y": 52
+          },
+          "id": 5,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Inactive_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Inactive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Active_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Active",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Memory Active / Inactive",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "Committed_AS - Amount of memory presently allocated on the system\n\nCommitLimit - Amount of  memory currently available to be allocated on the system",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Committed_AS"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "super-light-orange",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "CommitLimit"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "super-light-red",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 5,
+            "w": 2,
+            "x": 22,
+            "y": 57
+          },
+          "id": 50,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Committed_AS_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Committed_AS",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_CommitLimit_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "CommitLimit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Memory Committed",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "description": "Writeback - Memory which is actively being written back to disk\n\nWritebackTmp - Memory used by FUSE for temporary writeback buffers\n\nDirty - Memory which is waiting to get written back to the disk",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "bytes",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Active"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#99440A",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Buffers"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#58140C",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Cache"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#6D1F62",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Cached"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#511749",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Committed"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#508642",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Dirty"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#6ED0E0",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Free"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#B7DBAB",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Inactive"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#EA6460",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Mapped"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#052B51",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "PageTables"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#0A50A1",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Page_Tables"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#0A50A1",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Slab_Cache"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#EAB839",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Swap"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#BF1B00",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Swap_Cache"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#C15C17",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#511749",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total RAM"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#052B51",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total RAM + Swap"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#052B51",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "Total Swap"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#614D93",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "VmallocUsed"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#EA6460",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 0,
+            "y": 62
+          },
+          "id": 52,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Writeback_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Writeback",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_WritebackTmp_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "WritebackTmp",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(node_memory_Dirty_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\"})",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Dirty",
+              "range": true,
+              "refId": "C",
+              "step": 240
+            }
+          ],
+          "title": "Memory Writeback and Dirty",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Memory",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 13,
+      "panels": [
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 100,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 20,
+            "x": 0,
+            "y": 73
+          },
+          "id": 12,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "(node_filesystem_size_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\", mountpoint=\"/\"} - node_filesystem_avail_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\", mountpoint=\"/\"}) / node_filesystem_size_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\", mountpoint=\"/\"} * 100",
+              "instant": false,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Root Disk Utilization",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red"
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 4096000000
+                  },
+                  {
+                    "color": "green",
+                    "value": 20480000000
+                  }
+                ]
+              },
+              "unit": "bytes"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "A"
+                },
+                "properties": [
+                  {
+                    "id": "max",
+                    "value": 19434727014
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 4,
+            "x": 20,
+            "y": 73
+          },
+          "id": 15,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "node_filesystem_size_bytes{job=\"harbor-node-exporter\", instance=~\"$instance\", mountpoint=\"/\"}",
+              "instant": false,
+              "legendFormat": "{{instance}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Free Root Disk Space",
+          "type": "stat"
+        }
+      ],
+      "title": "Storage",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 53,
+      "panels": [
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "bits out (-) / in (+)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 40,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "receive_packets_eth0"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "receive_packets_lo"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "transmit_packets_eth0"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "transmit_packets_lo"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Trans.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 0,
+            "y": 84
+          },
+          "id": 58,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device!~\"veth.*\"}[$__rate_interval]) * 8) by (device)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{device}} - Receive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device!~\"veth.*\"}[$__rate_interval]) * 8) by (device)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{device}} - Transmit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device=~\"veth.*\"}[$__rate_interval]) * 8) ",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "veth* - Receive",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device=~\"veth.*\"}[$__rate_interval]) * 8) ",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "veth* - Transmit",
+              "range": true,
+              "refId": "D"
+            }
+          ],
+          "title": "Bytes by Device",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "bits out (-) / in (+)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 40,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "bps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "receive_packets_eth0"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "receive_packets_lo"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "transmit_packets_eth0"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "transmit_packets_lo"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Trans.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 11,
+            "y": 84
+          },
+          "id": 59,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} - Receive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} - Transmit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Bytes by Instance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "bps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "A"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "B"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 2,
+            "x": 22,
+            "y": 84
+          },
+          "id": 60,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Receive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_bytes_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8)",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "Transmit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Total Bytes",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "packets out (-) / in (+)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "receive_packets_eth0"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "receive_packets_lo"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "transmit_packets_eth0"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "transmit_packets_lo"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Trans.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 0,
+            "y": 94
+          },
+          "id": 56,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_packets_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device!~\"veth.*\"}[$__rate_interval])) by (device)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{device}} - Receive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_packets_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device!~\"veth.*\"}[$__rate_interval])) by (device)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{device}} - Transmit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_packets_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device=~\"veth.*\"}[$__rate_interval]))",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "veth* - Receive",
+              "range": true,
+              "refId": "C",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_packets_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device=~\"veth.*\"}[$__rate_interval]))",
+              "format": "time_series",
+              "hide": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "veth* - Transmit",
+              "range": true,
+              "refId": "D",
+              "step": 240
+            }
+          ],
+          "title": "Packets by Device",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "packets out (-) / in (+)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "receive_packets_eth0"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "receive_packets_lo"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "transmit_packets_eth0"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#7EB26D",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "transmit_packets_lo"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "#E24D42",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Trans.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 11,
+            "y": 94
+          },
+          "id": 57,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_packets_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])) by (instance)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} - Receive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_packets_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])) by (instance)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} - Transmit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Packets by Instance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "B"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "A"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 2,
+            "x": 22,
+            "y": 94
+          },
+          "id": 61,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_packets_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "Receive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_packets_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "Transmit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Total Packets",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "packets out (-) / in (+)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Trans.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 0,
+            "y": 104
+          },
+          "id": 63,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_errs_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device!~\"veth.*\"}[$__rate_interval])) by (device)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{device}} - Receive errors",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_errs_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device!~\"veth.*\"}[$__rate_interval])) by (device)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{device}} - Transmit errors",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_errs_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device=~\"veth.*\"}[$__rate_interval]))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "veth* - Receive errors",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "fdyxn4ek8opogc"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_errs_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device=~\"veth.*\"}[$__rate_interval]))",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "veth* - Transmit errors",
+              "range": true,
+              "refId": "D"
+            }
+          ],
+          "title": "Packet Error by Device",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "packets out (-) / in (+)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Trans.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 11,
+            "y": 104
+          },
+          "id": 64,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_errs_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} - Receive errors",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_errs_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} - Transmit errors",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Packet Error by Instance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "B"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "A"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 2,
+            "x": 22,
+            "y": 104
+          },
+          "id": 65,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_errs_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "Receive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_errs_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]) * 8)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "Transmit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Total Packet Error",
+          "type": "stat"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "packets out (-) / in (+)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Trans.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 0,
+            "y": 114
+          },
+          "id": 66,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_drop_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device!~\"veth.*\"}[$__rate_interval])) by (device)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{device}} - Receive drop",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_drop_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device!~\"veth.*\"}[$__rate_interval])) by (device)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{device}} - Transmit drop",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_drop_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device=~\"veth.*\"}[$__rate_interval]))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "veth* - Receive drop",
+              "range": true,
+              "refId": "C",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_drop_total{job=\"harbor-node-exporter\", instance=~\"$instance\", device=~\"veth.*\"}[$__rate_interval]))",
+              "format": "time_series",
+              "hide": false,
+              "intervalFactor": 1,
+              "legendFormat": "veth* - Transmit drop",
+              "range": true,
+              "refId": "D",
+              "step": 240
+            }
+          ],
+          "title": "Packet Drop by Device",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisBorderShow": false,
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "packets out (-) / in (+)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "barWidthFactor": 0.6,
+                "drawStyle": "line",
+                "fillOpacity": 20,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "insertNulls": false,
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byRegexp",
+                  "options": "/.*Trans.*/"
+                },
+                "properties": [
+                  {
+                    "id": "custom.transform",
+                    "value": "negative-Y"
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 11,
+            "x": 11,
+            "y": 114
+          },
+          "id": 67,
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true,
+              "sortBy": "Last *",
+              "sortDesc": true
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_drop_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} - Receive drop",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_drop_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval])) by (instance)",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "{{instance}} - Transmit drop",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Packet Drop by Instance",
+          "type": "timeseries"
+        },
+        {
+          "datasource": {
+            "default": true,
+            "type": "prometheus",
+            "uid": "fdyxn4ek8opogc"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green"
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "pps"
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "A"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-blue",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byFrameRefID",
+                  "options": "B"
+                },
+                "properties": [
+                  {
+                    "id": "color",
+                    "value": {
+                      "fixedColor": "light-purple",
+                      "mode": "fixed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 2,
+            "x": 22,
+            "y": 114
+          },
+          "id": 68,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "percentChangeColorMode": "standard",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showPercentChange": false,
+            "textMode": "auto",
+            "wideLayout": true
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_receive_drop_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Receive",
+              "range": true,
+              "refId": "A",
+              "step": 240
+            },
+            {
+              "datasource": {
+                "type": "prometheus",
+                "uid": "${datasource}"
+              },
+              "editorMode": "code",
+              "expr": "sum(irate(node_network_transmit_drop_total{job=\"harbor-node-exporter\", instance=~\"$instance\"}[$__rate_interval]))",
+              "format": "time_series",
+              "intervalFactor": 1,
+              "legendFormat": "Transmit",
+              "range": true,
+              "refId": "B",
+              "step": 240
+            }
+          ],
+          "title": "Total Packet Drop",
+          "type": "stat"
+        }
+      ],
+      "title": "Network Traffic",
+      "type": "row"
+    }
+  ],
+  "refresh": "30s",
+  "revision": 1,
+  "schemaVersion": 39,
+  "tags": [
+    "node-exporter",
+    "harbor"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "fdyxn4ek8opogc"
+        },
+        "definition": "label_values(node_uname_info{job=\"harbor-node-exporter\"}, nodename)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Instance",
+        "multi": true,
+        "name": "instance",
+        "options": [],
+        "query": {
+          "qryType": 5,
+          "query": "label_values(node_uname_info{job=\"harbor-node-exporter\"}, nodename)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Node",
+  "uid": "rYdwdlPWk",
+  "version": 7,
+  "weekStart": ""
+}

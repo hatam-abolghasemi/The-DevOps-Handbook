@@ -1,0 +1,13 @@
+---
+- name: Run the 'lastlog' command and skip those who have never logged in
+  shell: "lastlog | grep -v '**Never logged in**'"
+  register: lastlog_info
+  ignore_errors: true
+
+- name: Append 'lastlog' command output to the report file on the source machine
+  local_action:
+    module: lineinfile
+    path: "{{ lastlog_report_file }}"
+    line: "lastlog output on {{ inventory_hostname }}:\n{{ lastlog_info.stdout }}\n"
+  delegate_to: localhost
+  when: lastlog_info.stdout != ""

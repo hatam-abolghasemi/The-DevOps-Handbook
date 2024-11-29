@@ -1,0 +1,31 @@
+---
+- name: Ensure Node Exporter service is properly configured
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Clear and replace node-exporter service file content
+      copy:
+        dest: /lib/systemd/system/node-exporter.service
+        content: |
+          [Unit]
+          Description=Node Exporter
+          Documentation=https://prometheus.io/docs/guides/node-exporter/
+          Wants=network-online.target
+          After=network-online.target
+
+          [Service]
+          User=node-exporter
+          Group=node-exporter
+          Type=simple
+          Restart=on-failure
+          ExecStart=/usr/bin/node_exporter --web.listen-address=0.0.0.0:9100 --web.disable-exporter-metrics --collector.disable-defaults --collector.cpu --collector.meminfo --collector.netdev --collector.time --collector.loadavg --collector.stat --collector.mountstats --collector.diskstats --collector.filesystem
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Reload systemd daemon
+      command: systemctl daemon-reload
+
+    - name: Restart node-exporter service
+      command: systemctl restart node-exporter

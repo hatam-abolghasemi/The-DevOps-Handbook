@@ -1,0 +1,13 @@
+---
+- name: Run the 'w' command and skip the first two lines
+  shell: "w | tail -n +3"
+  register: w_output
+  ignore_errors: true
+
+- name: Append 'w' command output to the report file on the source machine
+  local_action:
+    module: lineinfile
+    path: "{{ w_report_file }}"
+    line: "w output on {{ inventory_hostname }}:\n{{ w_output.stdout }}\n"
+  delegate_to: localhost
+  when: w_output.stdout != ""

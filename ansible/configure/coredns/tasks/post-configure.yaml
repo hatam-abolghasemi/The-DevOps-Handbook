@@ -1,0 +1,17 @@
+---
+- name: Check CoreDNS service status
+  ansible.builtin.systemd:
+    name: coredns
+    state: started
+  register: coredns_service_status
+  ignore_errors: true
+
+- name: Fail if CoreDNS service is not active
+  ansible.builtin.fail:
+    msg: "CoreDNS service is not active. Current status: {{ coredns_service_status.status.ActiveState }}"
+  when: coredns_service_status.status.ActiveState != "active"
+
+- name: Display message if everything is finished successfully
+  debug:
+    msg: "Your new valid configuration is applied successfully, and CoreDNS service status is active(running)."
+  when: coredns_service_status.status.ActiveState == "active"

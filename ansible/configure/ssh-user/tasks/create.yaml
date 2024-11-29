@@ -1,0 +1,59 @@
+---
+- name: Ensure user does not already exist
+  command: id -u "{{ username }}"
+  register: user_check
+  failed_when: false
+  changed_when: false
+  ignore_errors: true
+
+- name: Add or remove user from sudo group based on sudo flag
+  user:
+    name: "{{ username }}"
+    groups: "{{ 'sudo' if sudo == 'true' else '' }}"
+    append: no
+  when: user_check.rc == 0
+
+- name: Fail if user already exists
+  fail:
+    msg: "User '{{ username }}' already exists."
+  when: user_check.rc == 0
+
+- name: Check if the user's home directory exists
+  stat:
+    path: "/home/{{ username }}"
+  register: home_dir_check
+
+- name: Create the new user with existing home directory
+  user:
+    name: "{{ username }}"
+    state: present
+    create_home: false  # Do not create a new home directory
+    shell: /bin/bash
+    home: "/home/{{ username }}"
+  when: home_dir_check.stat.exists
+
+- name: Create the new user with a new home directory
+  user:
+    name: "{{ username }}"
+    state: present
+    create_home: true  # Create a new home directory
+    shell: /bin/bash
+  when: not home_dir_check.stat.exists
+
+- name: Set ownership of existing home directory
+  file:
+    path: "/home/{{ username }}"
+    state: directory
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    recurse: true
+  when: home_dir_check.stat.exists
+
+- name: Verify user creation
+  command: id -u "{{ username }}"
+  register: user_verify
+  failed_when: user_verify.rc != 0
+
+- name: Report user creation details
+  debug:
+    msg: "User '{{ username }}' with home directory '/home/{{ username }}' and bash prompt has been created successfully."
