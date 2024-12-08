@@ -1,0 +1,19 @@
+[Unit]
+Description=Proxmox Exporter
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/hatam/proxmox-exporter
+Environment=VIRTUAL_ENV=/home/hatam/proxmox-exporter/venv
+ExecStart=/bin/bash -c "source $VIRTUAL_ENV/bin/activate && exec python3 /home/hatam/proxmox-exporter/app.py"
+ExecStop=/bin/bash -c "kill $(ps aux | grep '[p]ython3 /home/hatam/proxmox-exporter/app.py' | awk '{print $2}')"
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+[Install]
+WantedBy=multi-user.target
+
