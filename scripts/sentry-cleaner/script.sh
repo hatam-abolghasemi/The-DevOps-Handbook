@@ -21,7 +21,7 @@ sudo docker-compose down --volumes
 echo "* Removing sentry-kafka and sentry-zookeeper volumes"
 sudo docker volume rm sentry-kafka sentry-zookeeper
 echo "* Running Sentry installation script"
-sudo bash ./install.sh --no-report-self-hosted-issues
+http_proxy="http://proxy.alopeyk.com:8118" https_proxy="https://proxy.alopeyk.com:8118" sudo bash ./install.sh --no-report-self-hosted-issues
 echo "* Starting Sentry services in the background"
 sudo docker-compose up -d
 

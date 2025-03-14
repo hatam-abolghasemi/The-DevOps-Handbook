@@ -1,0 +1,12 @@
+FROM harbor.alo-data.com/main/python:3.12.5-slim
+RUN useradd -m appuser && mkdir -p /app && chown -R appuser:appuser /app
+WORKDIR /app
+
+COPY --chown=appuser:appuser requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+RUN apt update && apt install redis-tools -y
+COPY --chown=appuser:appuser app.py ./
+USER appuser
+
+EXPOSE 9107
+CMD ["python3", "app.py"]

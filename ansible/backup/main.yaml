@@ -1,0 +1,235 @@
+---
+- name: Backup required files and directories from remote machine
+  hosts: all
+  vars:
+    ansible_port: 22
+  gather_facts: no
+  tasks:
+    - name: Clear existing contents of the IP directory
+      delegate_to: localhost
+      file:
+        path: "./results/{{ inventory_hostname }}:{{ ansible_host }}"
+        state: absent
+
+    - name: Recreate the IP directory after clearing contents
+      delegate_to: localhost
+      file:
+        path: "./results/{{ inventory_hostname }}:{{ ansible_host }}"
+        state: directory
+
+    - name: Define required files and directories based on host group
+      set_fact:
+        required_files: >-
+          {%- if 'coredns' in group_names or 'coredns-data' in group_names -%}
+          [
+            '/etc/systemd/system/coredns.service'
+          ]
+          {%- elif 'haproxy' in group_names or 'haproxy-dev' in group_names or 'haproxy-data' in group_names or 'haproxy-data-k8s' in group_names -%}
+          [
+            '/etc/systemd/system/haproxy.service.d/limits.conf',
+            '/lib/systemd/system/haproxy.service'
+          ]
+          {%- elif 'k8s-master' in group_names or 'k8s-worker' in group_names or 'k8s-data-master' in group_names or 'k8s-data-worker' in group_names or 'k8s-data-dev-master' in group_names or 'k8s-data-dev-worker' in group_names -%}
+          [
+            '/etc/systemd/system/containerd.service'
+            '/etc/systemd/system/kubelet.service',
+            '/lib/systemd/system/kubelet.service',
+            '/run/metadata/torcx',
+            '/run/systemd/system/docker.service',
+            '/usr/local/lib/systemd/system/containerd.service',
+          ]
+          {%- elif 'netbox' in group_names -%}
+          [
+            '/etc/systemd/system/netbox.service',
+            '/opt/netbox/gunicorn.py'
+          ]
+          {%- elif 'redis' in group_names -%}
+          [
+            '/lib/systemd/system/redis-server.service',
+            '/etc/redis/redis.conf'
+          ]
+          {%- elif 'openconnect' in group_names -%}
+          [
+            '/lib/systemd/system/ocserv.service'
+          ]
+          {%- elif 'kraft' in group_names or 'kafka' in group_names or 'kafka-dev' in group_names -%}
+          [
+            '/etc/systemd/system/kraft.service',
+            '/etc/systemd/system/kafka.service'
+          ]
+          {%- elif 'clickhouse-keeper' in group_names or 'clickhouse' in group_names -%}
+          [
+            '/lib/systemd/system/clickhouse-keeper.service',
+            '/lib/systemd/system/clickhouse-server.service'
+          ]
+          {%- elif 'gitlab' in group_names -%}
+          [
+            '/usr/lib/systemd/system/gitlab-runsvdir.service',
+            '/etc/gitlab/gitlab.rb',
+            '/etc/gitlab/gitlab-secrets.json',
+            '/etc/systemd/system/gitlab-runner.service'
+          ]
+          {%- elif 'mongodb' in group_names -%}
+          [
+            '/lib/systemd/system/mongod.service',
+            '/etc/systemd/system/mongod.service.d/tunning.conf',
+            '/etc/default/mongod'
+          ]
+          {%- elif 'airflow' in group_names -%}
+          [
+            '/lib/systemd/system/docker.service'
+          ]
+          {%- elif 'superset' in group_names -%}
+          [
+            '/lib/systemd/system/docker.service'
+          ]
+          {%- elif 'feeder' in group_names -%}
+          [
+            '/home/alopeyk/feeder-service/docker-compose.yml',
+            '/home/alopeyk/feeder-service/docker-compose.yml',
+          ]
+          {%- else -%}
+          []
+          {%- endif -%}
+        required_dirs: >-
+          {%- if 'coredns' in group_names or 'coredns-data' in group_names -%}
+          [
+            '/etc/coredns/'
+          ]
+          {%- elif 'haproxy' in group_names or 'haproxy-dev' in group_names or 'haproxy-data' in group_names or 'haproxy-data-k8s' in group_names -%}
+          [
+            '/etc/haproxy/',
+            '/etc/ssl/'
+          ]
+          {%- elif 'k8s-master' in group_names or 'k8s-worker' in group_names or 'k8s-data-master' in group_names or 'k8s-data-worker' in group_names or 'k8s-data-dev-master' in group_names or 'k8s-data-dev-worker' in group_names -%}
+          [
+            '/etc/cni/',
+            '/etc/containerd/',
+            '/etc/docker/',
+            '/etc/flatcar/',
+            '/etc/systemd/system/containerd.service.d/',
+            '/etc/systemd/system/docker.service.d/'
+            '/run/torcx/unpack/docker/lib/',
+            '/run/torcx/unpack/docker/usr/',
+            '/usr/lib/systemd/system/kubelet.service.d/',
+            '/usr/local/lib/systemd/system/containerd.service.d/'
+          ]
+          {%- elif 'openconnect' in group_names -%}
+          [
+            '/etc/ocserv/'
+          ]
+          {%- elif 'kraft' in group_names or 'kafka' in group_names or 'kafka-dev' in group_names -%}
+          [
+            '/opt/kraft/config/',
+            '/opt/kafka/config/',
+            '/etc/kafka/'
+          ]
+          {%- elif 'clickhouse-keeper' in group_names or 'clickhouse' in group_names -%}
+          [
+            '/etc/clickhouse-keeper/',
+            '/etc/clickhouse-server/'
+          ]
+          {%- elif 'gitlab' in group_names -%}
+          [
+            '/opt/gitlab/etc/',
+            '/etc/gitlab-runner/'
+          ]
+          {%- elif 'superset' in group_names -%}
+          [
+            '/usr/lib/systemd/system/docker.service.d/'
+          ]
+          {%- else -%}
+          []
+          {%- endif -%}
+
+    - name: Create temporary directory at the destination machine
+      raw: mkdir -p /home/{{ ansible_user }}/_ansible
+      ignore_errors: yes
+      failed_when: false
+
+    - name: Clean up temporary directory on remote
+      become: true
+      raw: rm -rf /home/{{ ansible_user }}/_ansible
+      ignore_errors: yes
+      failed_when: false
+
+    # REQUIRED_FILES
+    - name: Create required directories on the source machine
+      delegate_to: localhost
+      file:
+        path: "./results/{{ inventory_hostname }}:{{ ansible_host }}/{{ item | dirname }}"
+        state: directory
+      with_items: "{{ required_files }}"
+
+    - name: Create required directories at a temporary location at the destination machine. we're doing it because of permission issues
+      raw: mkdir -p /home/{{ ansible_user }}/_ansible{{ item | dirname }}
+      with_items: "{{ required_files }}"
+      ignore_errors: yes
+
+    - name: Copy restricted files to a temporary location
+      become: true
+      raw: cp "{{ item }}" "/home/{{ ansible_user }}/_ansible{{ item }}" && chmod -R 755 "/home/{{ ansible_user }}/_ansible{{ item }}"
+      with_items: "{{ required_files }}"
+      ignore_errors: yes
+      failed_when: false
+
+    - name: Copy all files from required directories to source machine
+      delegate_to: localhost
+      raw: scp -P {{ ansible_port }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -R "{{ ansible_user }}@{{ ansible_host }}:/home/{{ ansible_user }}/_ansible{{ item }}" "./results/{{ inventory_hostname }}:{{ ansible_host }}/{{ item }}"
+      with_items: "{{ required_files }}"
+      when: item | length > 0
+      ignore_errors: yes
+      failed_when: false
+
+    - name: Clean up temporary directory on remote
+      become: true
+      raw: rm -rf /home/{{ ansible_user }}/_ansible
+      ignore_errors: yes
+
+    # REQUIRED_DIRS
+    - name: Create required directories on the source machine
+      delegate_to: localhost
+      file:
+        path: "./results/{{ inventory_hostname }}:{{ ansible_host }}{{ item }}"
+        state: directory
+      with_items: "{{ required_dirs }}"
+      failed_when: false
+
+    - name: Copy restricted files to a temporary location
+      become: true
+      raw: mkdir -p "/home/{{ ansible_user }}/_ansible{{ item }}" && cp -r "{{ item }}"/* "/home/{{ ansible_user }}/_ansible{{ item }}/" && chmod -R 755 "/home/{{ ansible_user }}/_ansible"
+      with_items: "{{ required_dirs }}"
+      ignore_errors: yes
+      failed_when: false
+
+    - name: Copy all files from required directories to source machine
+      delegate_to: localhost
+      raw: scp -P {{ ansible_port }} -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r "{{ ansible_user }}@{{ ansible_host }}:/home/{{ ansible_user }}/_ansible{{ item }}"/* "./results/{{ inventory_hostname }}:{{ ansible_host }}{{ item }}"
+      with_items: "{{ required_dirs }}"
+      ignore_errors: yes
+      failed_when: false
+
+    - name: Clean up temporary directory on remote
+      become: true
+      raw: rm -rf /home/{{ ansible_user }}/_ansible
+      ignore_errors: yes
+
+    # CLEANUP
+    - name: Remove empty directories recursively
+      delegate_to: localhost  
+      ansible.builtin.shell: |
+        remove_empty_dirs() {
+          ls -ltrh $1
+          if [ "$(ls -A $1)" ]; then
+            return
+          else
+            rm -r $1
+          fi
+          parent_dir=$(dirname $1)
+          if [ "$parent_dir" != "$1" ]; then
+            remove_empty_dirs $parent_dir
+          fi
+        }
+        find ./results/{{ inventory_hostname }}:{{ ansible_host }}/ -type d | while read dir; do
+          remove_empty_dirs "$dir"
+        done

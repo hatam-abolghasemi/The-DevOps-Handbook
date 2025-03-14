@@ -1,0 +1,15 @@
+[Unit]
+Description=Node Exporter TUNED
+After=network.target
+
+[Service]
+ExecStart=/etc/node-exporter-tuned/app.sh
+Restart=always
+RestartSec=5
+User=node-exporter-tuned
+Group=node-exporter-tuned
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+FROM harbor.alo-data.com/main/python:3.12.5-slim
+RUN mkdir -p /app
+WORKDIR /app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY app.py ./
+
+EXPOSE 9106
+CMD ["python3", "app.py"]

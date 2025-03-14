@@ -1,0 +1,22 @@
+[Unit]
+Description=Node Exporter TUNED
+After=network.target
+
+[Service]
+User=node-exporter-tuned
+Group=node-exporter-tuned
+WorkingDirectory=/etc/node-exporter-tuned
+Environment=VIRTUAL_ENV=/etc/node-exporter-tuned/venv
+ExecStart=/bin/bash -c "source $VIRTUAL_ENV/bin/activate && exec python3 /etc/node-exporter-tuned/app.py"
+ExecStop=/bin/bash -c "kill $(ps aux | grep '[p]ython3 /etc/node-exporter-tuned/app.py' | awk '{print $2}')"
+Restart=always
+RestartSec=5
+KillSignal=SIGINT
+TimeoutStopSec=10
+CPUAccounting=true
+MemoryAccounting=true
+CPUQuota=5%
+MemoryMax=60M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,41 @@
+{
+    "input": "http://0.0.0.0:8080/metrics",
+    "output": "http://0.0.0.0:10102",
+    "metrics": [
+      "kube_pod_labels",
+      "kube_pod_container_resource_limits",
+      "kube_pod_container_resource_requests",
+      "kube_pod_status_phase"
+    ],
+    "labels": [
+      "uid",
+      "label_pod_template_hash",
+      "label_app_kubernetes_io_name",
+      "label_app_kubernetes_io_instance",
+      "label_controller_revision_hash",
+      "label_pod_template_generation",
+      "label_chart",
+      "label_heritage",
+      "label_job_label",
+      "label_release",
+      "label_tier",
+      "label_role",
+      "label_statefulset_kubernetes_io_pod_name",
+      "label_service",
+      "label_app_kubernetes_io_managed_by",
+      "label_alertmanager",
+      "label_app_kubernetes_io_version",
+      "label_operator_prometheus_io_name",
+      "label_prometheus",
+      "label_operator_prometheus_io_shard",
+      "label_app_kubernetes_io_component",
+      "label_app_kubernetes_io_part_of",
+      "label_helm_sh_chart",
+      "label_job_name",
+      "label_controller_uid",
+      "label_k8s_app"
+    ],
+    "drop_metric_values": [
+      {"metric": "kube_pod_status_phase", "value": "0"}
+    ]
+}

@@ -1,0 +1,1917 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": {
+            "type": "grafana",
+            "uid": "-- Grafana --"
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 72,
+    "links": [],
+    "panels": [
+      {
+        "datasource": {
+          "default": false,
+          "type": "prometheus",
+          "uid": "ce9njsontombke"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 12,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "max": 100,
+            "min": 0,
+            "noValue": "0",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "percent"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 11,
+          "x": 0,
+          "y": 0
+        },
+        "id": 31,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.2.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "editorMode": "code",
+            "expr": "rate(mysql_global_status_subquery_cache_hit{instance=~\"$instance\"}[30s]) / \n(rate(mysql_global_status_subquery_cache_hit{instance=~\"$instance\"}[30s]) + rate(mysql_global_status_subquery_cache_miss{instance=~\"$instance\"}[30s])) * 100",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Subquery Cache Hit Rate",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "default": false,
+          "type": "prometheus",
+          "uid": "ce9njsontombke"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 12,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "noValue": "0",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 11,
+          "x": 11,
+          "y": 0
+        },
+        "id": 32,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.2.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "editorMode": "code",
+            "expr": "rate(mysql_global_status_subquery_cache_hit{instance=~\"$instance\"}[1m])",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Cache Hits Over Time",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "default": false,
+          "type": "prometheus",
+          "uid": "ce9njsontombke"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 12,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "noValue": "0",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 11,
+          "x": 0,
+          "y": 10
+        },
+        "id": 33,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.2.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "editorMode": "code",
+            "expr": "sum(rate(mysql_global_status_subquery_cache_hit{instance=~\"$instance\"}[30s])) \n/ (sum(rate(mysql_global_status_subquery_cache_hit{instance=~\"$instance\"}[30s])) + sum(rate(mysql_global_status_subquery_cache_miss{instance=~\"$instance\"}[30s])))",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "__auto",
+            "range": true,
+            "refId": "A"
+          }
+        ],
+        "title": "Cache Hit/Miss Ratio Over Time",
+        "type": "timeseries"
+      },
+      {
+        "datasource": {
+          "default": false,
+          "type": "prometheus",
+          "uid": "ce9njsontombke"
+        },
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisBorderShow": false,
+              "axisCenteredZero": false,
+              "axisColorMode": "text",
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "barWidthFactor": 0.6,
+              "drawStyle": "line",
+              "fillOpacity": 12,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "insertNulls": false,
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 3,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "auto",
+              "spanNulls": false,
+              "stacking": {
+                "group": "A",
+                "mode": "none"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "noValue": "0",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 11,
+          "x": 11,
+          "y": 10
+        },
+        "id": 34,
+        "options": {
+          "legend": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "displayMode": "table",
+            "placement": "right",
+            "showLegend": true,
+            "sortBy": "Last *",
+            "sortDesc": true
+          },
+          "tooltip": {
+            "mode": "single",
+            "sort": "none"
+          }
+        },
+        "pluginVersion": "11.2.0",
+        "targets": [
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "editorMode": "code",
+            "expr": "sum(rate(mysql_global_status_subquery_cache_hit{instance=~\"$instance\"}[30s]))",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "hits",
+            "range": true,
+            "refId": "A"
+          },
+          {
+            "datasource": {
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "editorMode": "code",
+            "expr": "sum(rate(mysql_global_status_subquery_cache_miss{instance=~\"$instance\"}[30s]))",
+            "hide": false,
+            "instant": false,
+            "legendFormat": "miss",
+            "range": true,
+            "refId": "B"
+          }
+        ],
+        "title": "Subquery Cache Hits & Misses",
+        "type": "timeseries"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 20
+        },
+        "id": 14,
+        "panels": [
+          {
+            "datasource": {
+              "name": "prometheus-dev",
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 12,
+                  "gradientMode": "opacity",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 3,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "bytes"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 10,
+              "w": 11,
+              "x": 0,
+              "y": 11
+            },
+            "id": 5,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true,
+                "sortBy": "Last *",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(mysql_info_schema_table_size{instance=~\"$instance\", schema=~\"$schema\", component!~\"data_free\"}) by (schema, table) > 0",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "{{schema}}:{{table}}",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Table Size by Schema:Table (Data + Index)",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "name": "prometheus-dev",
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 12,
+                  "gradientMode": "opacity",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 3,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 10,
+              "w": 11,
+              "x": 11,
+              "y": 11
+            },
+            "id": 15,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true,
+                "sortBy": "Last *",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(mysql_info_schema_table_statistics_rows_read_total{instance=~\"$instance\", schema=~\"$schema\"}[30s])) by (schema, table) > 0",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "{{schema}}:{{table}}",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Rows Read Rate by Schema:Table",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "light-green"
+                    }
+                  ]
+                },
+                "unit": "bytes"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "index_length"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "light-yellow",
+                        "mode": "fixed"
+                      }
+                    },
+                    {
+                      "id": "displayName",
+                      "value": "index"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "data_length"
+                  },
+                  "properties": [
+                    {
+                      "id": "displayName",
+                      "value": "data"
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "total"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "light-orange",
+                        "mode": "fixed"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 2,
+              "x": 22,
+              "y": 11
+            },
+            "id": 10,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(mysql_info_schema_table_size{instance=~\"$instance\", schema=~\"$schema\", component!~\"data_free\"} > 0) by (component)",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "B"
+              },
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(mysql_info_schema_table_size{instance=~\"$instance\", schema=~\"$schema\", component!~\"data_free\"} > 0)",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "total",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Table Size",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "name": "prometheus-dev",
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "light-blue"
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 2,
+              "x": 22,
+              "y": 16
+            },
+            "id": 17,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(mysql_info_schema_table_statistics_rows_read_total{instance=~\"$instance\", schema=~\"$schema\"}[30s])) > 0",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Total Rows Read",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "name": "prometheus-dev",
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 12,
+                  "gradientMode": "opacity",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 3,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 10,
+              "w": 11,
+              "x": 0,
+              "y": 21
+            },
+            "id": 18,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true,
+                "sortBy": "Last *",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(mysql_info_schema_table_statistics_rows_changed_total{instance=~\"$instance\", schema=~\"$schema\"}[30s])) by (schema, table) > 0",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "{{schema}}:{{table}}",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Rows Changed Rate by Schema:Table",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 12,
+                  "gradientMode": "opacity",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 3,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 10,
+              "w": 11,
+              "x": 11,
+              "y": 21
+            },
+            "id": 29,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true,
+                "sortBy": "Last *",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(mysql_info_schema_table_statistics_rows_changed_x_indexes_total{instance=~\"$instance\", schema=~\"$schema\"}[30s])) by (schema, table) > 0",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "{{schema}}:{{table}}",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Rows * Indexes Changed Rate by Schema:Table",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "name": "prometheus-dev",
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 2,
+              "x": 22,
+              "y": 21
+            },
+            "id": 20,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(mysql_info_schema_table_statistics_rows_changed_total{instance=~\"$instance\", schema=~\"$schema\"}[30s])) > 0",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Total Rows Changed",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    }
+                  ]
+                },
+                "unit": "short"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 5,
+              "w": 2,
+              "x": 22,
+              "y": 26
+            },
+            "id": 30,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "area",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum(rate(mysql_info_schema_table_statistics_rows_changed_x_indexes_total{instance=~\"$instance\", schema=~\"$schema\"}[30s])) > 0",
+                "hide": false,
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "B"
+              }
+            ],
+            "title": "Total Rows * Indexes Changed",
+            "type": "stat"
+          }
+        ],
+        "title": "Tables",
+        "type": "row"
+      },
+      {
+        "collapsed": true,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 21
+        },
+        "id": 21,
+        "panels": [
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "description": "The level of zlib compression to use for InnoDB compressed tables and indexes.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue"
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 3,
+              "x": 0,
+              "y": 1
+            },
+            "id": 22,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "mysql_global_variables_innodb_compression_level{instance=~\"$instance\"}",
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Compression Level",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "description": "The compression failure rate threshold for a table",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "max": 100,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "light-blue"
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 3,
+              "x": 3,
+              "y": 1
+            },
+            "id": 23,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "mysql_global_variables_innodb_compression_failure_threshold_pct{instance=~\"$instance\"}",
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Compression Failure Threshold",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "description": "The maximum percentage that can be reserved as free space within each compressed page, allowing room to reorganize the data and modification log within the page when a compressed table or index is updated and the data might be recompressed.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "max": 75,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "blue"
+                    }
+                  ]
+                },
+                "unit": "percent"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 4,
+              "x": 6,
+              "y": 1
+            },
+            "id": 24,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "mysql_global_variables_innodb_compression_pad_pct_max{instance=~\"$instance\"}",
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Compression Failure Rate Threshold",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "description": "Specifies whether images of re-compressed pages are written to the redo log. Re-compression may occur when changes are made to compressed data.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "thresholds"
+                },
+                "mappings": [],
+                "max": 75,
+                "min": 0,
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "light-green"
+                    }
+                  ]
+                },
+                "unit": "bool_yes_no"
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 4,
+              "w": 3,
+              "x": 10,
+              "y": 1
+            },
+            "id": 25,
+            "options": {
+              "colorMode": "value",
+              "graphMode": "none",
+              "justifyMode": "auto",
+              "orientation": "auto",
+              "percentChangeColorMode": "standard",
+              "reduceOptions": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "fields": "",
+                "values": false
+              },
+              "showPercentChange": false,
+              "textMode": "auto",
+              "wideLayout": true
+            },
+            "pluginVersion": "11.2.0",
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "mysql_global_variables_innodb_log_compressed_pages{instance=~\"$instance\"}",
+                "instant": false,
+                "legendFormat": "__auto",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Write Pages to The Redo Log",
+            "type": "stat"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "description": "Number of compression operations attempted. Pages are compressed whenever an empty page is created or the space for the uncompressed modification log runs out.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 11,
+              "x": 0,
+              "y": 5
+            },
+            "id": 26,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true,
+                "sortBy": "Last *",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "rate(mysql_info_schema_innodb_cmp_compress_ops_total{instance=~\"$instance\"}[$__interval]) or irate(mysql_info_schema_innodb_cmp_compress_ops_total{instance=~\"$instance\"}[5m])",
+                "instant": false,
+                "legendFormat": "{{page_size}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Compress Attempts by Page Size",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "description": "Number of uncompression operations performed. Compressed InnoDB pages are uncompressed whenever compression fails, or the first time a compressed page is accessed in the buffer pool and the uncompressed page does not exist.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 11,
+              "x": 11,
+              "y": 5
+            },
+            "id": 27,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true,
+                "sortBy": "Last *",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "rate(mysql_info_schema_innodb_cmp_uncompress_ops_total{instance=~\"$instance\"}[$__interval]) or irate(mysql_info_schema_innodb_cmp_uncompress_ops_total{instance=~\"$instance\"}[5m])",
+                "instant": false,
+                "legendFormat": "{{page_size}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Uncompressed Attempts by Page Size",
+            "type": "timeseries"
+          },
+          {
+            "datasource": {
+              "default": false,
+              "type": "prometheus",
+              "uid": "ce9njsontombke"
+            },
+            "description": "Shows the ratio between Success InnoDB Compress vs the total InnoDB Compress operations. A high ration indicates that InnoDB compression is being effective and helping to save disk space.",
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "palette-classic"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 0,
+                  "gradientMode": "none",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 5,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [],
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green"
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              },
+              "overrides": []
+            },
+            "gridPos": {
+              "h": 9,
+              "w": 11,
+              "x": 11,
+              "y": 14
+            },
+            "id": 28,
+            "options": {
+              "legend": {
+                "calcs": [
+                  "lastNotNull"
+                ],
+                "displayMode": "table",
+                "placement": "right",
+                "showLegend": true,
+                "sortBy": "Last *",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "mode": "single",
+                "sort": "none"
+              }
+            },
+            "targets": [
+              {
+                "datasource": {
+                  "type": "prometheus",
+                  "uid": "ce9njsontombke"
+                },
+                "editorMode": "code",
+                "expr": "sum_over_time(mysql_info_schema_innodb_cmp_compress_ops_ok_total{instance=~\"$instance\"}[$__interval]) / sum_over_time(mysql_info_schema_innodb_cmp_compress_ops_total{instance=~\"$instance\"}[$__interval]) or sum_over_time(mysql_info_schema_innodb_cmp_compress_ops_ok_total{instance=~\"$instance\"}[5m]) / sum_over_time(mysql_info_schema_innodb_cmp_compress_ops_total{instance=~\"$instance\"}[5m]) ",
+                "instant": false,
+                "legendFormat": "{{page_size}}",
+                "range": true,
+                "refId": "A"
+              }
+            ],
+            "title": "Compression Success Ratio by Page Size",
+            "type": "timeseries"
+          }
+        ],
+        "title": "InnoDB Compression",
+        "type": "row"
+      }
+    ],
+    "refresh": "10s",
+    "schemaVersion": 39,
+    "tags": [],
+    "templating": {
+      "list": [
+        {
+          "allValue": ".*",
+          "current": {
+            "selected": false,
+            "text": "dbm",
+            "value": "dbm"
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ce9njsontombke"
+          },
+          "definition": "label_values(mysql_global_status_busy_time,instance)",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Group",
+          "multi": true,
+          "name": "group",
+          "options": [],
+          "query": {
+            "qryType": 1,
+            "query": "label_values(mysql_global_status_busy_time,instance)",
+            "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          },
+          "refresh": 1,
+          "regex": "/^(.*?)(?=-)/",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        },
+        {
+          "allValue": ".*",
+          "current": {
+            "selected": false,
+            "text": "dbm-1",
+            "value": "dbm-1"
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ce9njsontombke"
+          },
+          "definition": "label_values(mysql_global_status_busy_time{instance=~\"$group.*\"},instance)",
+          "hide": 0,
+          "includeAll": false,
+          "label": "Instance",
+          "multi": false,
+          "name": "instance",
+          "options": [],
+          "query": {
+            "qryType": 1,
+            "query": "label_values(mysql_global_status_busy_time{instance=~\"$group.*\"},instance)",
+            "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          },
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        },
+        {
+          "allValue": ".*",
+          "current": {
+            "selected": true,
+            "text": [
+              "All"
+            ],
+            "value": [
+              "$__all"
+            ]
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "ce9njsontombke"
+          },
+          "definition": "label_values(mysql_info_schema_table_rows{instance=~\"$instance\"},schema)",
+          "hide": 0,
+          "includeAll": true,
+          "label": "Schema",
+          "multi": true,
+          "name": "schema",
+          "options": [],
+          "query": {
+            "qryType": 1,
+            "query": "label_values(mysql_info_schema_table_rows{instance=~\"$instance\"},schema)",
+            "refId": "PrometheusVariableQueryEditor-VariableQuery"
+          },
+          "refresh": 1,
+          "regex": "",
+          "skipUrlSync": false,
+          "sort": 1,
+          "type": "query"
+        }
+      ]
+    },
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Database",
+    "uid": "ee9ny6dwzbhfke",
+    "version": 48,
+    "weekStart": ""
+  }
