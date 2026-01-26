@@ -4,16 +4,20 @@ import time
 import json
 import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import urlparse
 
 with open('config.json') as config_file:
     config = json.load(config_file)
 INPUT = config['input']
-OUTPUT = int(config['output'].split(':')[-1])
+OUTPUT_URL = config['output']
 METRICS = config['metrics']
 LABELS = config['labels']
 DROP_METRIC_VALUES = config.get('drop_metric_values', [])
 filtered_data = {metric: [] for metric in METRICS}
 data_lock = threading.Lock()
+parsed_url = urlparse(OUTPUT_URL)
+OUTPUT_IP = parsed_url.hostname
+OUTPUT_PORT = parsed_url.port
 
 def filter_labels(metric_line):
     match = re.match(r'^(.*?)\{(.*?)\}\s+(.*)$', metric_line)
@@ -75,9 +79,9 @@ class MetricsHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
 def start():
-    server_address = ('', OUTPUT)
+    server_address = (OUTPUT_IP, OUTPUT_PORT)
     httpd = HTTPServer(server_address, MetricsHandler)
-    print(f"Serving filtered metrics on port {OUTPUT}...")
+    print(f"Serving filtered metrics on {OUTPUT_IP}:{OUTPUT_PORT}...")
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

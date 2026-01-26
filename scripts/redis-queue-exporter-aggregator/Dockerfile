@@ -1,4 +1,4 @@
-FROM harbor.alo-data.com/main/python:3.12.5-slim
+FROM python:3.12.5-slim
 RUN useradd -m appuser && mkdir -p /app && chown -R appuser:appuser /app
 WORKDIR /app
 

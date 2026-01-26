@@ -77,8 +77,8 @@ def main():
     redis_host, redis_port, redis_password = get_redis_credentials()
     if not redis_host:
         return
-    pod_name = "alopeyk-redis-1"
-    app_label = "alopeyk-app"
+    pod_name = "redis-1"
+    app_label = "app"
     pod_namespace = "prod"
 
     while True:

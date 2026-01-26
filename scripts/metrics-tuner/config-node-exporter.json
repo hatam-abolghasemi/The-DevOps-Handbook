@@ -1,0 +1,29 @@
+{
+    "input": "http://0.0.0.0:9100/metrics",
+    "output": "http://0.0.0.0:9101",
+    "metrics": [
+      "node_cpu_seconds_total",
+      "node_memory_MemAvailable_bytes",
+      "node_memory_MemTotal_bytes",
+      "node_network_receive_bytes_total",
+      "node_network_transmit_bytes_total",
+      "node_load1",
+      "node_time_seconds",
+      "node_boot_time_seconds",
+      "node_filesystem_size_bytes",
+      "node_filesystem_avail_bytes",
+      "node_context_switches_total",
+      "node_intr_total",
+      "node_disk_reads_completed_total",
+      "node_disk_writes_completed_total",
+      "node_procs_running",
+      "node_procs_blocked",
+      "node_forks_total",
+      "node_memory_SwapTotal_bytes",
+      "node_memory_SwapFree_bytes"
+    ],
+    "labels": [
+    ],
+    "drop_metric_values": [
+    ]
+}

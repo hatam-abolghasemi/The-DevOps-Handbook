@@ -83,11 +83,6 @@
           [
             '/lib/systemd/system/docker.service'
           ]
-          {%- elif 'feeder' in group_names -%}
-          [
-            '/home/alopeyk/feeder-service/docker-compose.yml',
-            '/home/alopeyk/feeder-service/docker-compose.yml',
-          ]
           {%- else -%}
           []
           {%- endif -%}
