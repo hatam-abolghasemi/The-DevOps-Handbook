@@ -1,0 +1,42 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-app
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-app
+  template:
+    metadata:
+      labels:
+        app: sample-app
+    spec:
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "app"
+      containers:
+        - name: app
+          image: php:7.4-fpm
+          ports:
+            - containerPort: 9000
+        - name: nginx
+          image: openresty/openresty:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
+            - name: lua-scripts
+              mountPath: /opt/prometheus 
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+        - name: lua-scripts
+          configMap:
+            name: lua-scripts
