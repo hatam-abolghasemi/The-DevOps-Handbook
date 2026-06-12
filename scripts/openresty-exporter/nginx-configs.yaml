@@ -8,87 +8,256 @@ data:
     lua_shared_dict prometheus_metrics 10M;
     lua_shared_dict custom_metrics 1M;
     lua_package_path "/opt/prometheus/?.lua;;";
+
     init_worker_by_lua_block {
-          prometheus = require("prometheus").init("prometheus_metrics")
-          metric_requests = prometheus:counter(
+        -- ============================================================
+        -- CONFIG
+        -- ============================================================
+        local cfg = {
+            app                             = "sample-app",
+            namespace                       = "default",
+            expiry_window                   = 15,
+
+            metric_requests                 = true,
+            metric_latency                  = true,
+            metric_latency_hist             = false,
+            metric_request_size             = true,
+            metric_request_size_histogram   = false,
+            metric_response_size            = true,
+            metric_response_size_histogram  = false,
+            metric_connections              = true,
+
+            histogram_buckets               = {0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10},
+            histogram_buckets_req_size      = {64, 256, 1024, 4096, 16384, 65536, 262144, 1048576},
+            histogram_buckets_res_size      = {64, 256, 1024, 4096, 16384, 65536, 262144, 1048576},
+
+            label_method                    = true,
+            label_route                     = true,
+            label_status                    = true,
+            label_app                       = false,
+            label_namespace                 = false,
+            label_client_subnet             = false,   -- remote_addr as x.x.x.0/24
+
+            -- route sanitization thresholds
+            sanitize_pure_numeric           = true,   -- /users/123
+            sanitize_uuid                   = true,   -- /users/550e8400-e29b-41d4-a716-446655440000
+            sanitize_hex                    = true,   -- /obj/a1b2c3d4e5f6ab
+            sanitize_long_with_digit        = true,   -- /x/abc123xyz  (len > sanitize_min_len and has digit)
+            sanitize_min_len                = 4,      -- min segment length for long+digit rule
+            sanitize_max_segment_len        = 64,     -- anything longer than this is always a $param
+            sanitize_slug_suffix_digit      = true,   -- /zone-7  /order-12345
+        }
+        -- ============================================================
+
+        local function build_label_schema()
+            local l = {}
+            if cfg.label_method            then table.insert(l, "method")           end
+            if cfg.label_route             then table.insert(l, "route")            end
+            if cfg.label_status            then table.insert(l, "status")           end
+            if cfg.label_client_subnet     then table.insert(l, "client_subnet")    end
+            if cfg.label_app               then table.insert(l, "app")              end
+            if cfg.label_namespace         then table.insert(l, "namespace")        end
+            return l
+        end
+
+        prometheus = require("prometheus").init("prometheus_metrics")
+
+        if cfg.metric_requests then
+            metric_requests = prometheus:counter(
                 "nginx_http_requests_total",
                 "Number of HTTP requests",
-                {"method", "route", "status", "app", "namespace"}
-          )
-          metric_latency = prometheus:gauge(
+                build_label_schema()
+            )
+        end
+
+        if cfg.metric_latency then
+            metric_latency = prometheus:gauge(
                 "nginx_http_request_duration_seconds",
                 "Duration of last HTTP request in seconds",
-                {"method", "route", "status", "app", "namespace"}
-          )
-          metric_latency_histogram = prometheus:histogram(
+                build_label_schema()
+            )
+        end
+
+        if cfg.metric_latency_hist then
+            metric_latency_histogram = prometheus:histogram(
                 "nginx_http_request_duration_seconds_histogram",
                 "HTTP request duration histogram in seconds",
-                {"method", "route", "status", "app", "namespace"},
-                {0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1, 2.5, 5, 10}
-          )
-          metric_connections = prometheus:gauge(
+                build_label_schema(),
+                cfg.histogram_buckets_latency
+            )
+        end
+
+        if cfg.metric_request_size then
+            metric_request_size = prometheus:gauge(
+                "nginx_http_request_size_bytes",
+                "Size of last HTTP request in bytes",
+                build_label_schema()
+            )
+        end
+
+        if cfg.metric_request_size_histogram then
+            metric_request_size_histogram = prometheus:histogram(
+                "nginx_http_request_size_bytes_histogram",
+                "HTTP request size histogram in bytes",
+                build_label_schema(),
+                cfg.histogram_buckets_req_size
+            )
+        end
+
+        if cfg.metric_response_size then
+            metric_response_size = prometheus:gauge(
+                "nginx_http_response_size_bytes",
+                "Size of last HTTP response in bytes",
+                build_label_schema()
+            )
+        end
+
+        if cfg.metric_response_size_histogram then
+            metric_response_size_histogram = prometheus:histogram(
+                "nginx_http_response_size_bytes_histogram",
+                "HTTP response size histogram in bytes",
+                build_label_schema(),
+                cfg.histogram_buckets_res_size
+            )
+        end
+
+        if cfg.metric_connections then
+            metric_connections = prometheus:gauge(
                 "nginx_http_connections",
                 "Number of HTTP connections",
                 {"state", "app", "namespace"}
-          )
-          local latency_dict = ngx.shared.custom_metrics
-          local expiry_window = 15
-          local function reset_expired_latency(prodmature)
-                if prodmature then return end
+            )
+        end
+
+        if cfg.metric_latency then
+            local latency_dict = ngx.shared.custom_metrics
+            local function reset_expired_latency(premature)
+                if premature then return end
                 local now = ngx.now()
-                local keys = latency_dict:get_keys(0)
-                for _, key in ipairs(keys) do
-                local last_update = latency_dict:get(key)
-                if last_update and now - last_update > expiry_window then
-                local labels = {}
-                for part in key:gmatch("[^|]+") do
-                      table.insert(labels, part)
-                end
-                metric_latency:set(0, labels)
-                latency_dict:delete(key)
-                end
+                for _, key in ipairs(latency_dict:get_keys(0)) do
+                    local last_update = latency_dict:get(key)
+                    if last_update and now - last_update > cfg.expiry_window then
+                        local labels = {}
+                        for part in key:gmatch("[^|]+") do table.insert(labels, part) end
+                        metric_latency:set(0, labels)
+                        if metric_request_size  then metric_request_size:set(0, labels)  end
+                        if metric_response_size then metric_response_size:set(0, labels) end
+                        latency_dict:delete(key)
+                    end
                 end
                 local ok, err = ngx.timer.at(5, reset_expired_latency)
-                if not ok then
-                ngx.log(ngx.ERR, "Failed to schedule next reset: ", err)
-                end
-          end
-          local ok, err = ngx.timer.at(5, reset_expired_latency)
-          if not ok then
-                ngx.log(ngx.ERR, "Failed to start reset timer: ", err)
-          end
+                if not ok then ngx.log(ngx.ERR, "Failed to reschedule reset: ", err) end
+            end
+            local ok, err = ngx.timer.at(5, reset_expired_latency)
+            if not ok then ngx.log(ngx.ERR, "Failed to start reset timer: ", err) end
+        end
+
+        _G._metrics_cfg = cfg
     }
+
     log_by_lua_block {
-          local method = ngx.var.request_method or "UNKNOWN"
-          local uri = ngx.var.request_uri or "/"
-          local status = ngx.var.status or "000"
-          local req_time = tonumber(ngx.var.request_time) or 0
-          local path = uri:match("^[^?]*")
-          local segments = {}
-          for seg in string.gmatch(path, "[^/]+") do
-                table.insert(segments, seg)
-          end
-          local sanitized_segments = {}
-          for _, segment in ipairs(segments) do
-                if segment:match("^%d+$") then
-                      table.insert(sanitized_segments, "$param")
-                elseif #segment > 4 and segment:find("%d") then
-                      table.insert(sanitized_segments, "$param")
-                else
-                      table.insert(sanitized_segments, segment)
+        local cfg = _G._metrics_cfg
+
+        local function get_client_subnet(addr)
+            if not addr then return "unknown" end
+            -- handle X-Forwarded-For: take first IP if comma-separated
+            local ip = addr:match("^%s*([^,]+)"):match("^%s*(.-)%s*$")
+            local a, b, c = ip:match("^(%d+)%.(%d+)%.(%d+)%.")
+            if a then
+                return a .. "." .. b .. "." .. c .. ".0"
+            end
+            return "unknown"
+        end
+
+        local function build_labels(method, route, status, client_subnet)
+            local l = {}
+            if cfg.label_method            then table.insert(l, method)        end
+            if cfg.label_route             then table.insert(l, route)         end
+            if cfg.label_status            then table.insert(l, status)        end
+            if cfg.label_client_subnet     then table.insert(l, client_subnet) end
+            if cfg.label_app               then table.insert(l, cfg.app)       end
+            if cfg.label_namespace         then table.insert(l, cfg.namespace) end
+            return l
+        end
+
+        local function is_param_segment(seg)
+            -- 1. too long to be a real route word
+            if #seg > cfg.sanitize_max_segment_len then
+                return true
+            end
+            -- 2. pure numeric  e.g. 123, 00045
+            if cfg.sanitize_pure_numeric and seg:match("^%d+$") then
+                return true
+            end
+            -- 3. UUID  e.g. 550e8400-e29b-41d4-a716-446655440000
+            if cfg.sanitize_uuid and seg:match("^%x%x%x%x%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%-%x%x%x%x%x%x%x%x%x%x%x%x$") then
+                return true
+            end
+            -- 4. pure hex string (8+ hex chars, no hyphens)  e.g. a1b2c3d4e5f6
+            if cfg.sanitize_hex and #seg >= 8 and seg:match("^%x+$") then
+                return true
+            end
+            -- 5. slug ending in digits  e.g. order-12345, zone-7
+            if cfg.sanitize_slug_suffix_digit and seg:match("-%d+$") then
+                return true
+            end
+            -- 6. long segment that contains any digit  e.g. abc123xyz
+            if cfg.sanitize_long_with_digit and #seg > cfg.sanitize_min_len and seg:find("%d") then
+                return true
+            end
+            return false
+        end
+
+        local method          = ngx.var.request_method or "UNKNOWN"
+        local status          = ngx.var.status or "000"
+        local req_time        = tonumber(ngx.var.request_time) or 0
+        local req_size = tonumber(ngx.var.request_length) or 0
+        local res_size = tonumber(ngx.var.bytes_sent) or 0
+        local client_subnet   = cfg.label_client_subnet and get_client_subnet(ngx.var.http_x_forwarded_for or ngx.var.remote_addr) or nil
+
+        -- strip query string, collapse duplicate slashes
+        local path = (ngx.var.request_uri or "/"):match("^[^?]*"):gsub("//+", "/")
+
+        local segments = {}
+        for seg in path:gmatch("[^/]+") do
+            if is_param_segment(seg) then
+                -- collapse consecutive $param to avoid /a/$param/$param cardinality
+                if segments[#segments] ~= "$param" then
+                    table.insert(segments, "$param")
                 end
-          end
-          local route = "/" .. table.concat(sanitized_segments, "/")
-          if route:sub(-1) == "/" and #route > 1 then
-                route = route:sub(1, -2)
-          end
-          local labels = {method, route, status, "app", "env"}
-          local label_key = table.concat(labels, "|")
-          metric_requests:inc(1, labels)
-          metric_latency:set(req_time, labels)
-          metric_latency_histogram:observe(req_time, labels)
-          local custom_dict = ngx.shared.custom_metrics
-          custom_dict:set(label_key, ngx.now())
+            else
+                table.insert(segments, seg)
+            end
+        end
+
+        local route = "/" .. table.concat(segments, "/")
+        -- strip trailing slash unless root
+        if #route > 1 and route:sub(-1) == "/" then route = route:sub(1, -2) end
+
+        local labels = build_labels(method, route, status, client_subnet)
+
+        if metric_requests then
+            metric_requests:inc(1, labels)
+        end
+
+        if metric_latency then
+            metric_latency:set(req_time, labels)
+            ngx.shared.custom_metrics:set(table.concat(labels, "|"), ngx.now())
+        end
+
+        if metric_latency_histogram then
+            metric_latency_histogram:observe(req_time, labels)
+        end
+
+        if metric_request_size then
+            metric_request_size:set(req_size, labels)
+            metric_request_size_histogram:observe(req_size, labels)
+        end
+
+        if metric_response_size then
+            metric_response_size:set(res_size, labels)
+            metric_response_size_histogram:observe(res_size, labels)
+        end
     }
     upstream app {
       server 127.0.0.1:9000;
