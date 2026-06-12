@@ -211,8 +211,8 @@ data:
         local method          = ngx.var.request_method or "UNKNOWN"
         local status          = ngx.var.status or "000"
         local req_time        = tonumber(ngx.var.request_time) or 0
-        local req_size = tonumber(ngx.var.request_length) or 0
-        local res_size = tonumber(ngx.var.bytes_sent) or 0
+        local req_size        = tonumber(ngx.var.request_length) or 0
+        local res_size        = tonumber(ngx.var.body_bytes_sent) or 0
         local client_subnet   = cfg.label_client_subnet and get_client_subnet(ngx.var.http_x_forwarded_for or ngx.var.remote_addr) or nil
 
         -- strip query string, collapse duplicate slashes
@@ -251,11 +251,17 @@ data:
 
         if metric_request_size then
             metric_request_size:set(req_size, labels)
+        end
+
+        if metric_request_size_histogram then
             metric_request_size_histogram:observe(req_size, labels)
         end
 
         if metric_response_size then
             metric_response_size:set(res_size, labels)
+        end
+
+        if metric_response_size_histogram then
             metric_response_size_histogram:observe(res_size, labels)
         end
     }
