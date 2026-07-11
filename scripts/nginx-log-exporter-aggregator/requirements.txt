@@ -1,4 +1,0 @@
-flask
-kubernetes
-requests
-numpy

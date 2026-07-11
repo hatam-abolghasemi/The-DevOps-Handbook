@@ -3,7 +3,7 @@ WORKDIR /app
 COPY main.go .
 RUN go build -o json-exposer main.go
 
-FROM alpine:3.23.2
+FROM alpine:3.22.2
 WORKDIR /app
 COPY --from=build /app/json-exposer /app/json-exposer
 EXPOSE 8080
