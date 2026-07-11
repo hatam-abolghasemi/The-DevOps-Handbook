@@ -127,7 +127,9 @@
                 }
               }
             ],
-            "queryOptions": {},
+            "queryOptions": {
+              "interval": "60s"
+            },
             "transformations": [
               {
                 "group": "joinByField",
@@ -1766,7 +1768,7 @@
               }
             ],
             "queryOptions": {
-              "maxDataPoints": 100
+              "interval": "60s"
             },
             "transformations": []
           }
@@ -1842,154 +1844,6 @@
                   ]
                 },
                 "unit": "none"
-              },
-              "overrides": []
-            },
-            "options": {
-              "annotations": {
-                "clustering": -1,
-                "multiLane": false
-              },
-              "legend": {
-                "calcs": [
-                  "lastNotNull",
-                  "mean",
-                  "max"
-                ],
-                "displayMode": "table",
-                "enableFacetedFilter": false,
-                "overflow": "ellipsis",
-                "placement": "bottom",
-                "showLegend": true,
-                "sortBy": "Max",
-                "sortDesc": true
-              },
-              "tooltip": {
-                "hideZeros": false,
-                "mode": "single",
-                "sort": "none"
-              }
-            }
-          },
-          "version": "13.1.0"
-        }
-      }
-    },
-    "panel-19": {
-      "kind": "Panel",
-      "spec": {
-        "data": {
-          "kind": "QueryGroup",
-          "spec": {
-            "queries": [
-              {
-                "kind": "PanelQuery",
-                "spec": {
-                  "hidden": false,
-                  "query": {
-                    "datasource": {
-                      "name": "${env}"
-                    },
-                    "group": "prometheus",
-                    "kind": "DataQuery",
-                    "spec": {
-                      "editorMode": "code",
-                      "expr": "rate(container_cpu_cfs_throttled_periods_total{\n    namespace=~\"$namespace\",\n    pod=~\"$component.*\",\n    pod=~\"$pod\",\n    container=~\"$container\",\n    image!=\"registry.k8s.io/pause:3.10\", \n    id=~\".*.scope\",\n    pod!=\"\",\n    container!=\"\"\n  }[$__rate_interval])\n/\nrate(container_cpu_cfs_periods_total{\n    namespace=~\"$namespace\",\n    pod=~\"$component.*\",\n    pod=~\"$pod\",\n    container=~\"$container\",\n    image!=\"registry.k8s.io/pause:3.10\", \n    id=~\".*.scope\",\n    pod!=\"\",\n    container!=\"\"\n  }[$__rate_interval])",
-                      "instant": false,
-                      "legendFormat": "{{pod}} - {{container}}",
-                      "range": true
-                    },
-                    "version": "v0"
-                  },
-                  "refId": "A"
-                }
-              }
-            ],
-            "queryOptions": {
-              "maxDataPoints": 100
-            },
-            "transformations": []
-          }
-        },
-        "description": "Mean > 25% means low cpu limit.",
-        "id": 19,
-        "links": [],
-        "title": "Throttle Ratio",
-        "transparent": true,
-        "vizConfig": {
-          "group": "timeseries",
-          "kind": "VizConfig",
-          "spec": {
-            "fieldConfig": {
-              "defaults": {
-                "color": {
-                  "mode": "continuous-GrYlRd",
-                  "seriesBy": "max"
-                },
-                "custom": {
-                  "axisBorderShow": false,
-                  "axisCenteredZero": false,
-                  "axisColorMode": "text",
-                  "axisLabel": "",
-                  "axisPlacement": "auto",
-                  "barAlignment": 0,
-                  "barWidthFactor": 0.6,
-                  "drawStyle": "line",
-                  "fillOpacity": 5,
-                  "gradientMode": "opacity",
-                  "hideFrom": {
-                    "legend": false,
-                    "tooltip": false,
-                    "viz": false
-                  },
-                  "insertNulls": false,
-                  "lineInterpolation": "linear",
-                  "lineWidth": 1,
-                  "pointSize": 3,
-                  "scaleDistribution": {
-                    "type": "linear"
-                  },
-                  "showPoints": "auto",
-                  "showValues": false,
-                  "spanNulls": false,
-                  "stacking": {
-                    "group": "A",
-                    "mode": "none"
-                  },
-                  "thresholdsStyle": {
-                    "mode": "dashed"
-                  }
-                },
-                "mappings": [
-                  {
-                    "options": {
-                      "match": "null+nan",
-                      "result": {
-                        "color": "dark-red",
-                        "index": 0,
-                        "text": "∞"
-                      }
-                    },
-                    "type": "special"
-                  }
-                ],
-                "max": 1,
-                "min": 0,
-                "noValue": "∞",
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "#299c46",
-                      "value": 0
-                    },
-                    {
-                      "color": "#EAB839",
-                      "value": 0.25
-                    }
-                  ]
-                },
-                "unit": "percentunit"
               },
               "overrides": []
             },
@@ -3549,6 +3403,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -3690,6 +3545,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -3781,7 +3637,7 @@
             "fieldConfig": {
               "defaults": {
                 "color": {
-                  "fixedColor": "super-light-green",
+                  "fixedColor": "#015d91",
                   "mode": "shades",
                   "seriesBy": "max"
                 },
@@ -3794,7 +3650,7 @@
                   "barAlignment": 0,
                   "barWidthFactor": 0.6,
                   "drawStyle": "line",
-                  "fillOpacity": 10,
+                  "fillOpacity": 1,
                   "gradientMode": "opacity",
                   "hideFrom": {
                     "legend": false,
@@ -3832,6 +3688,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -3974,6 +3831,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -4151,6 +4009,7 @@
                 ],
                 "max": 1,
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -4292,6 +4151,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -4463,6 +4323,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -4635,6 +4496,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -6169,7 +6031,9 @@
                 }
               }
             ],
-            "queryOptions": {},
+            "queryOptions": {
+              "interval": "60s"
+            },
             "transformations": []
           }
         },
@@ -6237,7 +6101,7 @@
                 ],
                 "max": 1,
                 "min": 0,
-                "noValue": "∞",
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -8367,7 +8231,9 @@
                 }
               }
             ],
-            "queryOptions": {},
+            "queryOptions": {
+              "interval": "60s"
+            },
             "transformations": []
           }
         },
@@ -8432,6 +8298,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -8752,7 +8619,7 @@
                   "barAlignment": 0,
                   "barWidthFactor": 0.6,
                   "drawStyle": "line",
-                  "fillOpacity": 10,
+                  "fillOpacity": 3,
                   "gradientMode": "opacity",
                   "hideFrom": {
                     "legend": false,
@@ -9055,7 +8922,7 @@
                   "barAlignment": 0,
                   "barWidthFactor": 0.6,
                   "drawStyle": "line",
-                  "fillOpacity": 10,
+                  "fillOpacity": 3,
                   "gradientMode": "opacity",
                   "hideFrom": {
                     "legend": false,
@@ -9311,6 +9178,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -9453,6 +9321,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -9610,6 +9479,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -9782,6 +9652,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -9954,6 +9825,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -10096,6 +9968,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -10236,6 +10109,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -10383,7 +10257,9 @@
                 }
               }
             ],
-            "queryOptions": {},
+            "queryOptions": {
+              "interval": "60s"
+            },
             "transformations": [
               {
                 "group": "joinByField",
@@ -10977,6 +10853,7 @@
                 ],
                 "max": 1,
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -11117,6 +10994,7 @@
                   }
                 ],
                 "min": 0,
+                "noValue": "0",
                 "thresholds": {
                   "mode": "absolute",
                   "steps": [
@@ -11305,9 +11183,10 @@
                     "indexByName": {
                       "Value #avg used": 2,
                       "Value #avg util": 3,
-                      "Value #requests": 4,
+                      "Value #limits": 4,
+                      "Value #requests": 5,
                       "container 1": 1,
-                      "node 1": 5,
+                      "node 1": 6,
                       "pod 1": 0
                     },
                     "renameByName": {
@@ -11658,19 +11537,6 @@
                       "width": 12,
                       "x": 12,
                       "y": 10
-                    }
-                  },
-                  {
-                    "kind": "GridLayoutItem",
-                    "spec": {
-                      "element": {
-                        "kind": "ElementReference",
-                        "name": "panel-19"
-                      },
-                      "height": 10,
-                      "width": 12,
-                      "x": 0,
-                      "y": 20
                     }
                   }
                 ]

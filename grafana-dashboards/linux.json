@@ -4,8 +4,8 @@
       "kind": "AnnotationQuery",
       "spec": {
         "builtIn": true,
-        "enable": true,
-        "hide": true,
+        "enable": false,
+        "hide": false,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
         "query": {
@@ -42,7 +42,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "avg(1 - rate(node_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\", mode=\"idle\"}[1m])) by (job, instance)",
+                      "expr": "1 - avg(rate(node_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\", mode=\"idle\"}[$__rate_interval])) by (job, instance)",
                       "legendFormat": "{{instance}}",
                       "range": true
                     },
@@ -135,6 +135,8 @@
                   "max"
                 ],
                 "displayMode": "table",
+                "enableFacetedFilter": false,
+                "overflow": "ellipsis",
                 "placement": "bottom",
                 "showLegend": true,
                 "sortBy": "Max",
@@ -147,7 +149,7 @@
               }
             }
           },
-          "version": "13.0.1+security-01"
+          "version": "13.1.0"
         }
       }
     },
@@ -1071,7 +1073,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      node_filesystem_size_bytes{\n        job=~\"$job\", instance=~\"$instance\",\n        fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n        mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n        device!~\"tmpfs|lxcfs\"\n      },\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancemountpoint\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"mountpoint\"\n  ),\n  \"instancemountpoint\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)",
+                      "expr": "label_join(\n  node_filesystem_size_bytes{\n    job=~\"$job\",\n    instance=~\"$instance\",\n    fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n    mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n    device!~\"tmpfs|lxcfs\"\n  },\n  \"instancemountpoint\",\n  \":\",\n  \"instance\", \"mountpoint\"\n)",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -1095,7 +1097,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      node_filesystem_avail_bytes{\n        job=~\"$job\", instance=~\"$instance\",\n        fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n        mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n        device!~\"tmpfs|lxcfs\"\n      },\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancemountpoint\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"mountpoint\"\n  ),\n  \"instancemountpoint\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)",
+                      "expr": "label_join(\n  node_filesystem_avail_bytes{\n    job=~\"$job\",\n    instance=~\"$instance\",\n    fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n    mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n    device!~\"tmpfs|lxcfs\"\n  },\n  \"instancemountpoint\",\n  \":\",\n  \"instance\", \"mountpoint\"\n)",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -1119,7 +1121,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      node_filesystem_size_bytes{\n        job=~\"$job\", instance=~\"$instance\",\n        fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n        mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n        device!~\"tmpfs|lxcfs\"\n      }\n      -\n      node_filesystem_avail_bytes{\n        job=~\"$job\", instance=~\"$instance\",\n        fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n        mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n        device!~\"tmpfs|lxcfs\"\n      },\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancemountpoint\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"mountpoint\"\n  ),\n  \"instancemountpoint\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)",
+                      "expr": "label_join(\n  node_filesystem_size_bytes{\n    job=~\"$job\",\n    instance=~\"$instance\",\n    fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n    mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n    device!~\"tmpfs|lxcfs\"\n  }\n  -\n  node_filesystem_avail_bytes{\n    job=~\"$job\",\n    instance=~\"$instance\",\n    fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n    mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n    device!~\"tmpfs|lxcfs\"\n  },\n  \"instancemountpoint\",\n  \":\",\n  \"instance\", \"mountpoint\"\n)",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -1143,7 +1145,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      (\n        node_filesystem_size_bytes{\n              job=~\"$job\", instance=~\"$instance\",\n              fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n              mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n              device!~\"tmpfs|lxcfs\"\n            } \n        - node_filesystem_free_bytes{\n              job=~\"$job\", instance=~\"$instance\",\n              fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n              mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n              device!~\"tmpfs|lxcfs\"\n            }\n      )\n      /\n      node_filesystem_size_bytes{\n        job=~\"$job\", instance=~\"$instance\",\n        fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n        mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n        device!~\"tmpfs|lxcfs\"\n      },\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancemountpoint\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"mountpoint\"\n  ),\n  \"instancemountpoint\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)",
+                      "expr": "label_join(\n  (\n    node_filesystem_size_bytes{\n      job=~\"$job\",\n      instance=~\"$instance\",\n      fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n      mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n      device!~\"tmpfs|lxcfs\"\n    } \n    - node_filesystem_free_bytes{\n        job=~\"$job\",\n        instance=~\"$instance\",\n        fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n        mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n        device!~\"tmpfs|lxcfs\"\n      }\n  )\n  /\n  node_filesystem_size_bytes{\n    job=~\"$job\",\n    instance=~\"$instance\",\n    fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n    mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n    device!~\"tmpfs|lxcfs\"\n  },\n  \"instancemountpoint\",\n  \":\",\n  \"instance\", \"mountpoint\"\n)",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -1152,6 +1154,54 @@
                     "version": "v0"
                   },
                   "refId": "utilization"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${datasource}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "exemplar": false,
+                      "expr": "label_join(\n    deriv(\n      (\n        node_filesystem_size_bytes{\n          job=~\"$job\",\n          instance=~\"$instance\",\n          fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n          mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n          device!~\"tmpfs|lxcfs\"\n        }\n        -\n        node_filesystem_avail_bytes{\n          job=~\"$job\",\n          instance=~\"$instance\",\n          fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n          mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n          device!~\"tmpfs|lxcfs\"\n        }\n      )[$__rate_interval:$__interval]\n    ),\n  \"instancemountpoint\",\n  \":\",\n  \"instance\", \"mountpoint\"\n)",
+                      "format": "table",
+                      "instant": true,
+                      "legendFormat": "__auto",
+                      "range": false
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "usage rate"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${datasource}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "exemplar": false,
+                      "expr": "label_join(\n    (\n      (\n        node_filesystem_size_bytes{\n          job=~\"$job\",\n          instance=~\"$instance\",\n          fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n          mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n          device!~\"tmpfs|lxcfs\"\n        }\n        -\n        node_filesystem_avail_bytes{\n          job=~\"$job\",\n          instance=~\"$instance\",\n          fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n          mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n          device!~\"tmpfs|lxcfs\"\n        }\n      )\n      /\n      deriv(\n        (\n          node_filesystem_size_bytes{\n            job=~\"$job\",\n            instance=~\"$instance\",\n            fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n            mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n            device!~\"tmpfs|lxcfs\"\n          }\n          -\n          node_filesystem_avail_bytes{\n            job=~\"$job\",\n            instance=~\"$instance\",\n            fstype!~\"tmpfs|overlay|fuse.lxcfs\",\n            mountpoint!~\"/run.*|/boot.*|/etc/pve|/usr.*|/oem\",\n            device!~\"tmpfs|lxcfs\"\n          }\n        )[$__rate_interval:$__interval]\n      )\n    ) > 0,\n  \"instancemountpoint\",\n  \":\",\n  \"instance\", \"mountpoint\"\n)",
+                      "format": "table",
+                      "instant": true,
+                      "legendFormat": "__auto",
+                      "range": false
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "time left to full"
                 }
               }
             ],
@@ -1174,14 +1224,16 @@
                   "options": {
                     "include": {
                       "names": [
+                        "device 1",
                         "fstype 1",
                         "instance 1",
-                        "mountpoint 1",
                         "Value #total",
                         "Value #available",
                         "Value #used",
                         "Value #utilization",
-                        "device 1"
+                        "Value #usage rate",
+                        "Value #time left to full",
+                        "mountpoint 1"
                       ]
                     }
                   }
@@ -1209,7 +1261,9 @@
                       "Value #core": "core",
                       "Value #limit": "limit",
                       "Value #load": "load",
+                      "Value #time left to full": "time left to full",
                       "Value #total": "total",
+                      "Value #usage rate": "usage rate",
                       "Value #used": "used",
                       "Value #utilization": "utilization",
                       "device 1": "device",
@@ -1421,6 +1475,101 @@
                       "value": 56
                     }
                   ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "usage rate",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "unit",
+                      "value": "binBps"
+                    },
+                    {
+                      "id": "color",
+                      "value": {
+                        "mode": "thresholds"
+                      }
+                    },
+                    {
+                      "id": "custom.width",
+                      "value": 120
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "light-blue",
+                            "value": 0
+                          },
+                          {
+                            "color": "light-purple",
+                            "value": 0
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byName",
+                    "options": "Value #time left to full",
+                    "scope": "series"
+                  },
+                  "properties": [
+                    {
+                      "id": "custom.cellOptions",
+                      "value": {
+                        "type": "color-text"
+                      }
+                    },
+                    {
+                      "id": "unit",
+                      "value": "s"
+                    },
+                    {
+                      "id": "color"
+                    },
+                    {
+                      "id": "thresholds",
+                      "value": {
+                        "mode": "absolute",
+                        "steps": [
+                          {
+                            "color": "red",
+                            "value": 0
+                          },
+                          {
+                            "color": "orange",
+                            "value": 3600
+                          },
+                          {
+                            "color": "green",
+                            "value": 86400
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "id": "noValue",
+                      "value": "∞"
+                    },
+                    {
+                      "id": "custom.width",
+                      "value": 140
+                    }
+                  ]
                 }
               ]
             },
@@ -1430,12 +1579,12 @@
               "sortBy": [
                 {
                   "desc": false,
-                  "displayName": "available"
+                  "displayName": "mountpoint"
                 }
               ]
             }
           },
-          "version": "13.0.1+security-01"
+          "version": "13.1.0"
         }
       }
     },
@@ -1551,6 +1700,8 @@
                   "max"
                 ],
                 "displayMode": "table",
+                "enableFacetedFilter": false,
+                "overflow": "ellipsis",
                 "placement": "bottom",
                 "showLegend": true,
                 "sortBy": "Max",
@@ -1563,7 +1714,7 @@
               }
             }
           },
-          "version": "13.0.1+security-01"
+          "version": "13.1.0"
         }
       }
     },
@@ -1678,6 +1829,8 @@
                   "max"
                 ],
                 "displayMode": "table",
+                "enableFacetedFilter": false,
+                "overflow": "ellipsis",
                 "placement": "bottom",
                 "showLegend": true,
                 "sortBy": "Max",
@@ -1690,7 +1843,7 @@
               }
             }
           },
-          "version": "13.0.1+security-01"
+          "version": "13.1.0"
         }
       }
     },
@@ -2324,6 +2477,8 @@
                   "max"
                 ],
                 "displayMode": "table",
+                "enableFacetedFilter": false,
+                "overflow": "ellipsis",
                 "placement": "bottom",
                 "showLegend": true,
                 "sortBy": "Max",
@@ -2336,7 +2491,7 @@
               }
             }
           },
-          "version": "13.0.1+security-01"
+          "version": "13.1.0"
         }
       }
     },
@@ -2536,7 +2691,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      (\n        rate(node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m]) +\n        rate(node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n      )\n      and on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n      > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n  ),\n  \"instancedevice\", \":\", \"instance\", \"device\"),\n\"instancedevice\", \"$1\", \"instance\", \"([^:]+):.*\")",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      (\n        rate(node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval]) +\n        rate(node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n      )\n      and on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n      > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n  ),\n  \"instancedevice\", \":\", \"instance\", \"device\"),\n\"instancedevice\", \"$1\", \"instance\", \"([^:]+):.*\")",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -2560,7 +2715,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n    (\n      rate(node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m]) +\n      rate(node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n    )\n    /\n    node_network_speed_bytes{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    and on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"} > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n  ),\n  \"instancedevice\", \":\", \"instance\", \"device\"),\n\"instancedevice\", \"$1\", \"instance\", \"([^:]+):.*\")",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n    (\n      rate(node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval]) +\n      rate(node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n    )\n    /\n    node_network_speed_bytes{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    and on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"} > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n  ),\n  \"instancedevice\", \":\", \"instance\", \"device\"),\n\"instancedevice\", \"$1\", \"instance\", \"([^:]+):.*\")",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -2608,7 +2763,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      (\n        rate(node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m]) \n      )\n      and on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n      > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n  ),\n  \"instancedevice\", \":\", \"instance\", \"device\"),\n\"instancedevice\", \"$1\", \"instance\", \"([^:]+):.*\")",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      (\n        rate(node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval]) \n      )\n      and on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n      > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n  ),\n  \"instancedevice\", \":\", \"instance\", \"device\"),\n\"instancedevice\", \"$1\", \"instance\", \"([^:]+):.*\")",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -2632,7 +2787,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      (\n        rate(node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m]) \n      )\n      and on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n      > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n  ),\n  \"instancedevice\", \":\", \"instance\", \"device\"),\n\"instancedevice\", \"$1\", \"instance\", \"([^:]+):.*\")",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      (\n        rate(node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval]) \n      )\n      and on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n      > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n  ),\n  \"instancedevice\", \":\", \"instance\", \"device\"),\n\"instancedevice\", \"$1\", \"instance\", \"([^:]+):.*\")",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -3128,7 +3283,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "(\n  rate(node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m]) +\n  rate(node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n)\n/\nnode_network_speed_bytes{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\nand on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"} > 0",
+                      "expr": "(\n  rate(node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval]) +\n  rate(node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n)\n/\nnode_network_speed_bytes{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\nand on(instance, device) node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"} > 0",
                       "legendFormat": "{{instance}} - {{device}}",
                       "range": true
                     },
@@ -3270,7 +3425,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n  rate(\n    node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n  rate(\n    node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - receive - {{device}}",
                       "range": true
                     },
@@ -3291,7 +3446,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n  rate(\n    node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n  rate(\n    node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - transmit - {{device}}",
                       "range": true
                     },
@@ -3430,7 +3585,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n  rate(\n    node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n  rate(\n    node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - transmit - {{device}}",
                       "range": true
                     },
@@ -3557,7 +3712,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n  rate(\n    node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n  rate(\n    node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - receive - {{device}}",
                       "range": true
                     },
@@ -3685,7 +3840,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      sum(\n        rate(\n            node_disk_reads_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n        +\n        rate(\n            node_disk_writes_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n        )\n      )\n      by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)\n",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      sum(\n        rate(\n            node_disk_reads_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n        +\n        rate(\n            node_disk_writes_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n        )\n      )\n      by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)\n",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -3709,7 +3864,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      sum(\n        rate(\n            node_disk_read_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n        +\n        rate(\n            node_disk_written_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n        )\n      )\n      by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)\n",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      sum(\n        rate(\n            node_disk_read_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n        +\n        rate(\n            node_disk_written_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n        )\n      )\n      by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)\n",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -3733,7 +3888,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n        sum(\n          rate(\n            node_disk_io_time_seconds_total{\n              job=~\"$job\", instance=~\"$instance\",\n              device!~\"dm.*|sr0\"}[1m]\n              )\n            )\n            by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n        sum(\n          rate(\n            node_disk_io_time_seconds_total{\n              job=~\"$job\", instance=~\"$instance\",\n              device!~\"dm.*|sr0\"}[$__rate_interval]\n              )\n            )\n            by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -3757,7 +3912,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      sum(\n        rate(\n            node_disk_read_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n      )\n      by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)\n",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      sum(\n        rate(\n            node_disk_read_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n      )\n      by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)\n",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -3781,7 +3936,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      sum(\n        rate(\n            node_disk_written_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n      )\n      by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)\n",
+                      "expr": "label_replace(\n  label_join(\n    label_replace(\n      sum(\n        rate(\n            node_disk_written_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n      )\n      by (instance, device),\n      \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n    ),\n    \"instancedevice\",    # target label to store combined value\n    \":\",           # separator between labels\n    \"instance\", \"device\"\n  ),\n  \"instancedevice\",      # target label for final regex\n  \"$1\",            # keep only the part before the colon\n  \"instance\",      # source label\n  \"([^:]+):.*\"     # regex: capture everything before colon\n)\n",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -4137,7 +4292,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_read_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n        +\n        rate(\n            node_disk_written_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n        )\n    )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_read_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n        +\n        rate(\n            node_disk_written_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n        )\n    )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - {{device}}",
                       "range": true
                     },
@@ -4264,7 +4419,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_reads_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n        )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_reads_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n        )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - read - {{device}}",
                       "range": true
                     },
@@ -4285,7 +4440,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_writes_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n        )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_writes_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n        )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - write - {{device}}",
                       "range": true
                     },
@@ -4425,7 +4580,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_reads_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n        +\n        rate(\n            node_disk_writes_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n        )\n    )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_reads_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n        +\n        rate(\n            node_disk_writes_completed_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n        )\n    )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - {{device}}",
                       "range": true
                     },
@@ -4645,6 +4800,8 @@
                   "max"
                 ],
                 "displayMode": "table",
+                "enableFacetedFilter": false,
+                "overflow": "ellipsis",
                 "placement": "bottom",
                 "showLegend": true,
                 "sortBy": "Max",
@@ -4657,7 +4814,7 @@
               }
             }
           },
-          "version": "13.0.1+security-01"
+          "version": "13.1.0"
         }
       }
     },
@@ -4680,7 +4837,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_read_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n        )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_read_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n        )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - read - {{device}}",
                       "range": true
                     },
@@ -4701,7 +4858,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_written_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[1m]\n            )\n        )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n    sum(\n        rate(\n            node_disk_written_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"dm.*|sr0\"}[$__rate_interval]\n            )\n        )\n    by (instance, device)\n    > 0,\n    \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - write - {{device}}",
                       "range": true
                     },
@@ -5097,7 +5254,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n  rate(\n    node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n  rate(\n    node_network_receive_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - receive - {{device}}",
                       "range": true
                     },
@@ -5118,7 +5275,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "label_replace(\n  rate(\n    node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[1m])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n  rate(\n    node_network_transmit_bytes_total{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}[$__rate_interval])\n    and on(instance, device)\n    node_network_up{job=~\"$job\", instance=~\"$instance\", device!~\"cali.*|cilium.*|lxc.*|fw.*|lo\"}\n    > 0,\n  \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "legendFormat": "{{instance}} - transmit - {{device}}",
                       "range": true
                     },
@@ -5222,6 +5379,8 @@
                   "max"
                 ],
                 "displayMode": "table",
+                "enableFacetedFilter": false,
+                "overflow": "ellipsis",
                 "placement": "bottom",
                 "showLegend": true,
                 "sortBy": "Max",
@@ -5234,7 +5393,7 @@
               }
             }
           },
-          "version": "13.0.1+security-01"
+          "version": "13.1.0"
         }
       }
     },
@@ -5282,7 +5441,7 @@
                     "spec": {
                       "editorMode": "code",
                       "exemplar": false,
-                      "expr": "label_replace(\n    avg(\n        1 - rate(\n            node_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\", mode=\"idle\"}[1m]\n            )\n        )\n    by (instance),\n   \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
+                      "expr": "label_replace(\n    1 - avg(rate(node_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\", mode=\"idle\"}[$__rate_interval])) by (instance),\n   \"instance\", \"$1\", \"instance\", \"^[^:]+:[^:]+:[^:]+:(.+)\"\n)",
                       "format": "table",
                       "instant": true,
                       "legendFormat": "__auto",
@@ -5537,7 +5696,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "avg(1 - rate(node_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\", mode=\"idle\"}[1m])) by (job, instance)",
+                      "expr": "1 - avg(rate(node_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\", mode=\"idle\"}[$__rate_interval])) by (job, instance)",
                       "legendFormat": "{{instance}}",
                       "range": true
                     },
@@ -5792,7 +5951,7 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "max(1 - rate(node_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\", mode=\"idle\"}[1m])) by (job, instance)",
+                      "expr": "max(1 - rate(node_cpu_seconds_total{job=~\"$job\", instance=~\"$instance\", mode=\"idle\"}[$__rate_interval])) by (job, instance)",
                       "legendFormat": "{{instance}}",
                       "range": true
                     },
@@ -6802,14 +6961,6 @@
   },
   "links": [],
   "liveNow": false,
-  "preferences": {
-    "layout": {
-      "kind": "GridLayout",
-      "spec": {
-        "items": []
-      }
-    }
-  },
   "preload": false,
   "tags": [],
   "timeSettings": {
@@ -6827,7 +6978,7 @@
       "1d"
     ],
     "fiscalYearStartMonth": 0,
-    "from": "now-6h",
+    "from": "now-30m",
     "hideTimepicker": false,
     "timezone": "browser",
     "to": "now"
@@ -6839,7 +6990,7 @@
       "spec": {
         "allowCustomValue": false,
         "current": {
-          "text": "sample",
+          "text": "k8s beheshti snfd thanos",
           "value": "cemj5le17z20wb"
         },
         "hide": "dontHide",
