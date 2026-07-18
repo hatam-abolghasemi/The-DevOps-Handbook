@@ -1594,9 +1594,9 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "max(\n  container_memory_working_set_bytes{\n      namespace=~\"$namespace\",\n      pod=~\"$component.*\",\n      pod=~\"$pod\",\n      container=~\"$container\",\n      image!~\"registry.k8s.io/pause:3.10\", \n      id=~\".*.scope\",\n      pod!~\"\",\n      container!~\"\"\n  }\n)",
+                      "expr": "sum(\n  container_memory_working_set_bytes{\n      namespace=~\"$namespace\",\n      pod=~\"$component.*\",\n      pod=~\"$pod\",\n      container=~\"$container\",\n      image!~\"registry.k8s.io/pause:3.10\", \n      id=~\".*.scope\",\n      pod!~\"\",\n      container!~\"\"\n  }\n)",
                       "instant": false,
-                      "legendFormat": "max",
+                      "legendFormat": "total",
                       "range": true
                     },
                     "version": "v0"
@@ -1756,9 +1756,9 @@
                     "kind": "DataQuery",
                     "spec": {
                       "editorMode": "code",
-                      "expr": "max(\n  sum(\n    rate(container_cpu_usage_seconds_total{\n        namespace=~\"$namespace\",\n        pod=~\"$component.*\",\n        pod=~\"$pod\",\n        container=~\"$container\",\n        image!~\"registry.k8s.io/pause:3.10\", \n        id=~\".*.scope\",\n        pod!~\"\",\n        container!~\"\"\n    }[$__rate_interval])\n  ) by (pod, container, namespace)\n)",
+                      "expr": "sum(\n  sum(\n    rate(container_cpu_usage_seconds_total{\n        namespace=~\"$namespace\",\n        pod=~\"$component.*\",\n        pod=~\"$pod\",\n        container=~\"$container\",\n        image!~\"registry.k8s.io/pause:3.10\", \n        id=~\".*.scope\",\n        pod!~\"\",\n        container!~\"\"\n    }[$__rate_interval])\n  ) by (pod, container, namespace)\n)",
                       "instant": false,
-                      "legendFormat": "max",
+                      "legendFormat": "total",
                       "range": true
                     },
                     "version": "v0"
@@ -10755,6 +10755,614 @@
         }
       }
     },
+    "panel-61": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "sum_over_time(\n  sum(\n    clamp_min(\n      nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"2.*\"}\n      - on(route, status, method, pod)\n      (nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"2.*\"} offset 15s)\n    , 0)\n  ) by (status) [30s:15s]\n) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "2XX"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "sum_over_time(\n  sum(\n    clamp_min(\n      nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"3.*\"}\n      - on(route, status, method, pod)\n      (nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"3.*\"} offset 15s)\n    , 0)\n  ) by (status) [30s:15s]\n) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "3XX"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "sum_over_time(\n  sum(\n    clamp_min(\n      nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"4.*\"}\n      - on(route, status, method, pod)\n      (nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"4.*\"} offset 15s)\n    , 0)\n  ) by (status) [30s:15s]\n) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "4XX"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "sum_over_time(\n  sum(\n    clamp_min(\n      nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"5.*\"}\n      - on(route, status, method, pod)\n      (nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"5.*\"} offset 15s)\n    , 0)\n  ) by (status) [30s:15s]\n) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "5XX"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "sum_over_time(\n  sum(\n    clamp_min(\n      nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"1.*\"}\n      - on(route, status, method, pod)\n      (nginx_http_requests_total{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"$status\", status=~\"1.*\"} offset 15s)\n    , 0)\n  ) by (status) [30s:15s]\n) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "1XX"
+                }
+              }
+            ],
+            "queryOptions": {
+              "interval": "30s"
+            },
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 61,
+        "links": [],
+        "title": "request count (status)",
+        "transparent": true,
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "continuous-GrYlRd",
+                  "seriesBy": "max"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 5,
+                  "gradientMode": "opacity",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 3,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "decimals": 0,
+                "mappings": [
+                  {
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "N/A"
+                      }
+                    },
+                    "type": "special"
+                  }
+                ],
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#299c46",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "none"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "2XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "super-light-green",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "3XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "super-light-yellow",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "4XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "super-light-orange",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "5XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "super-light-red",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "1XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#808080",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "max",
+                  "sum"
+                ],
+                "displayMode": "table",
+                "enableFacetedFilter": false,
+                "overflow": "ellipsis",
+                "placement": "bottom",
+                "showLegend": true,
+                "sortBy": "Total",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.1.0"
+        }
+      }
+    },
+    "panel-62": {
+      "kind": "Panel",
+      "spec": {
+        "data": {
+          "kind": "QueryGroup",
+          "spec": {
+            "queries": [
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "avg(nginx_http_request_duration_seconds{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"2.*\", status=~\"$status\"}) by (status) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "2XX"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": true,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "avg(nginx_http_request_duration_seconds{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"3.*\", status=~\"$status\"}) by (status) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "3XX"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "avg(nginx_http_request_duration_seconds{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"4.*\", status=~\"$status\"}) by (status) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "4XX"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "avg(nginx_http_request_duration_seconds{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"5.*\", status=~\"$status\"}) by (status) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "5XX"
+                }
+              },
+              {
+                "kind": "PanelQuery",
+                "spec": {
+                  "hidden": false,
+                  "query": {
+                    "datasource": {
+                      "name": "${env}"
+                    },
+                    "group": "prometheus",
+                    "kind": "DataQuery",
+                    "spec": {
+                      "editorMode": "code",
+                      "expr": "avg(nginx_http_request_duration_seconds{namespace=\"$namespace\", pod=~\"$component.*\", pod=~\"$pod\", route=~\"$route\", route!~\"/metrics|/actuator/health-check|\", status=~\"1.*\", status=~\"$status\"}) by (status) > 0",
+                      "instant": false,
+                      "legendFormat": "{{status}}",
+                      "range": true
+                    },
+                    "version": "v0"
+                  },
+                  "refId": "1XX"
+                }
+              }
+            ],
+            "queryOptions": {},
+            "transformations": []
+          }
+        },
+        "description": "",
+        "id": 62,
+        "links": [],
+        "title": "average of last request time (status)",
+        "transparent": true,
+        "vizConfig": {
+          "group": "timeseries",
+          "kind": "VizConfig",
+          "spec": {
+            "fieldConfig": {
+              "defaults": {
+                "color": {
+                  "mode": "continuous-GrYlRd",
+                  "seriesBy": "max"
+                },
+                "custom": {
+                  "axisBorderShow": false,
+                  "axisCenteredZero": false,
+                  "axisColorMode": "text",
+                  "axisLabel": "",
+                  "axisPlacement": "auto",
+                  "barAlignment": 0,
+                  "barWidthFactor": 0.6,
+                  "drawStyle": "line",
+                  "fillOpacity": 10,
+                  "gradientMode": "opacity",
+                  "hideFrom": {
+                    "legend": false,
+                    "tooltip": false,
+                    "viz": false
+                  },
+                  "insertNulls": false,
+                  "lineInterpolation": "linear",
+                  "lineWidth": 1,
+                  "pointSize": 3,
+                  "scaleDistribution": {
+                    "type": "linear"
+                  },
+                  "showPoints": "auto",
+                  "showValues": false,
+                  "spanNulls": false,
+                  "stacking": {
+                    "group": "A",
+                    "mode": "none"
+                  },
+                  "thresholdsStyle": {
+                    "mode": "off"
+                  }
+                },
+                "mappings": [
+                  {
+                    "options": {
+                      "match": "null",
+                      "result": {
+                        "text": "N/A"
+                      }
+                    },
+                    "type": "special"
+                  }
+                ],
+                "min": 0,
+                "noValue": "0",
+                "thresholds": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "#299c46",
+                      "value": 0
+                    }
+                  ]
+                },
+                "unit": "s"
+              },
+              "overrides": [
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "2XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "light-green",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "3XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "light-yellow",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "4XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "light-orange",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "5XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "light-red",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "matcher": {
+                    "id": "byFrameRefID",
+                    "options": "1XX"
+                  },
+                  "properties": [
+                    {
+                      "id": "color",
+                      "value": {
+                        "fixedColor": "#b4b4b4",
+                        "mode": "shades"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "options": {
+              "annotations": {
+                "clustering": -1,
+                "multiLane": false
+              },
+              "legend": {
+                "calcs": [
+                  "lastNotNull",
+                  "mean",
+                  "max"
+                ],
+                "displayMode": "table",
+                "enableFacetedFilter": false,
+                "overflow": "ellipsis",
+                "placement": "bottom",
+                "showLegend": true,
+                "sortBy": "Max",
+                "sortDesc": true
+              },
+              "tooltip": {
+                "hideZeros": false,
+                "mode": "single",
+                "sort": "none"
+              }
+            }
+          },
+          "version": "13.1.0"
+        }
+      }
+    },
     "panel-7": {
       "kind": "Panel",
       "spec": {
@@ -11843,12 +12451,38 @@
                     "spec": {
                       "element": {
                         "kind": "ElementReference",
-                        "name": "panel-22"
+                        "name": "panel-62"
                       },
                       "height": 10,
                       "width": 12,
                       "x": 0,
                       "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-61"
+                      },
+                      "height": 10,
+                      "width": 12,
+                      "x": 12,
+                      "y": 0
+                    }
+                  },
+                  {
+                    "kind": "GridLayoutItem",
+                    "spec": {
+                      "element": {
+                        "kind": "ElementReference",
+                        "name": "panel-22"
+                      },
+                      "height": 10,
+                      "width": 12,
+                      "x": 0,
+                      "y": 10
                     }
                   },
                   {
@@ -11861,7 +12495,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 12,
-                      "y": 0
+                      "y": 10
                     }
                   },
                   {
@@ -11874,7 +12508,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 0,
-                      "y": 10
+                      "y": 20
                     }
                   },
                   {
@@ -11887,7 +12521,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 12,
-                      "y": 10
+                      "y": 20
                     }
                   },
                   {
@@ -11900,7 +12534,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 0,
-                      "y": 20
+                      "y": 30
                     }
                   },
                   {
@@ -11913,7 +12547,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 12,
-                      "y": 20
+                      "y": 30
                     }
                   },
                   {
@@ -11926,7 +12560,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 0,
-                      "y": 30
+                      "y": 40
                     }
                   },
                   {
@@ -11939,7 +12573,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 12,
-                      "y": 30
+                      "y": 40
                     }
                   },
                   {
@@ -11952,7 +12586,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 0,
-                      "y": 40
+                      "y": 50
                     }
                   },
                   {
@@ -11965,7 +12599,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 12,
-                      "y": 40
+                      "y": 50
                     }
                   },
                   {
@@ -11978,7 +12612,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 0,
-                      "y": 50
+                      "y": 60
                     }
                   },
                   {
@@ -11991,7 +12625,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 12,
-                      "y": 50
+                      "y": 60
                     }
                   },
                   {
@@ -12004,7 +12638,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 0,
-                      "y": 60
+                      "y": 70
                     }
                   },
                   {
@@ -12017,7 +12651,7 @@
                       "height": 10,
                       "width": 12,
                       "x": 12,
-                      "y": 60
+                      "y": 70
                     }
                   }
                 ]
@@ -12311,7 +12945,9 @@
         "allValue": ".*",
         "allowCustomValue": true,
         "current": {
-          "text": "All",
+          "text": [
+            "All"
+          ],
           "value": [
             "$__all"
           ]
