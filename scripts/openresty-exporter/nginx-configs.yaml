@@ -8,7 +8,7 @@ data:
     lua_shared_dict prometheus_metrics 5M;
     lua_shared_dict custom_metrics 1M;
     lua_package_path "/opt/prometheus/?.lua;;";
- 
+
     init_worker_by_lua_block {
         -- ============================================================
         -- CONFIG
@@ -18,7 +18,8 @@ data:
             namespace                               = "default",
             expiry_window                           = 10,
             expiry_scan_limit                       = 10000,  -- bounds get_keys(); unbounded scans block all workers under high cardinality
- 
+            cluster_ip_prefix                       = "10.233.",  -- must end in "."; octet-aligned prefix only (verify per-cluster)
+
             metric_requests                         = true,
             metric_latency                          = true,
             metric_latency_hist                     = true,
@@ -31,20 +32,21 @@ data:
             metric_connection_requests_histogram    = false,   -- $connection_requests histogram
             metric_connection_time                  = true,    -- $connection_time gauge (auto-reset)
             metric_connection_time_histogram        = false,   -- $connection_time histogram
- 
+
             histogram_buckets                       = {0.01, 0.025, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 2.5, 5, 10},
             histogram_buckets_req_size              = {64, 256, 1024, 4096, 16384, 65536, 262144, 1048576},
             histogram_buckets_res_size              = {64, 256, 1024, 4096, 16384, 65536, 262144, 1048576},
             histogram_buckets_conn_requests         = {1, 2, 5, 10, 25, 50, 100, 250},
             histogram_buckets_conn_time             = {0.1, 0.5, 1, 5, 15, 30, 60, 300},
- 
+
             label_method                            = true,
             label_route                             = true,
             label_status                            = true,
             label_app                               = false,
             label_namespace                         = false,
             label_client_subnet                     = false,   -- remote_addr as x.x.x.0/24
- 
+            label_host                              = true,
+
             -- route sanitization thresholds
             sanitize_pure_numeric                   = true,   -- /users/123
             sanitize_uuid                           = true,   -- /users/550e8400-e29b-41d4-a716-446655440000
@@ -56,29 +58,30 @@ data:
             sanitize_file_extension                 = true,   -- /report.pdf  /file.js  /image.png
         }
         -- ============================================================
- 
+
         local function build_label_schema()
             local l = {}
             if cfg.label_method            then table.insert(l, "method")           end
             if cfg.label_route             then table.insert(l, "route")            end
             if cfg.label_status            then table.insert(l, "status")           end
             if cfg.label_client_subnet     then table.insert(l, "client_subnet")    end
+            if cfg.label_host              then table.insert(l, "host")             end
             if cfg.label_app               then table.insert(l, "app")              end
             if cfg.label_namespace         then table.insert(l, "namespace")        end
             return l
         end
- 
+
         -- computed once and reused for every request-level metric registration below
         -- (previously build_label_schema() was called separately per metric, rebuilding
         -- the same table four times for no reason)
         local label_schema = build_label_schema()
- 
+
         -- connection-level metrics always use app+namespace only,
         -- since connections cannot be classified by method/route/status
         local conn_label_schema = {"app", "namespace"}
- 
+
         prometheus = require("prometheus").init("prometheus_metrics")
- 
+
         if cfg.metric_requests then
             metric_requests = prometheus:counter(
                 "nginx_http_requests_total",
@@ -86,7 +89,7 @@ data:
                 label_schema
             )
         end
- 
+
         if cfg.metric_latency then
             metric_latency = prometheus:gauge(
                 "nginx_http_request_duration_seconds",
@@ -94,7 +97,7 @@ data:
                 label_schema
             )
         end
- 
+
         if cfg.metric_latency_hist then
             metric_latency_histogram = prometheus:histogram(
                 "nginx_http_request_duration_seconds_histogram",
@@ -103,7 +106,7 @@ data:
                 cfg.histogram_buckets
             )
         end
- 
+
         if cfg.metric_request_size then
             metric_request_size = prometheus:gauge(
                 "nginx_http_request_size_bytes",
@@ -111,7 +114,7 @@ data:
                 label_schema
             )
         end
- 
+
         if cfg.metric_request_size_histogram then
             metric_request_size_histogram = prometheus:histogram(
                 "nginx_http_request_size_bytes_histogram",
@@ -120,7 +123,7 @@ data:
                 cfg.histogram_buckets_req_size
             )
         end
- 
+
         if cfg.metric_response_size then
             metric_response_size = prometheus:gauge(
                 "nginx_http_response_size_bytes",
@@ -128,7 +131,7 @@ data:
                 label_schema
             )
         end
- 
+
         if cfg.metric_response_size_histogram then
             metric_response_size_histogram = prometheus:histogram(
                 "nginx_http_response_size_bytes_histogram",
@@ -137,7 +140,7 @@ data:
                 cfg.histogram_buckets_res_size
             )
         end
- 
+
         if cfg.metric_connections then
             metric_connections = prometheus:gauge(
                 "nginx_http_connections",
@@ -145,7 +148,7 @@ data:
                 {"state", "app", "namespace"}
             )
         end
- 
+
         if cfg.metric_connection_requests then
             metric_connection_requests = prometheus:gauge(
                 "nginx_connection_requests",
@@ -153,7 +156,7 @@ data:
                 conn_label_schema
             )
         end
- 
+
         if cfg.metric_connection_requests_histogram then
             metric_connection_requests_histogram = prometheus:histogram(
                 "nginx_connection_requests_histogram",
@@ -162,7 +165,7 @@ data:
                 cfg.histogram_buckets_conn_requests
             )
         end
- 
+
         if cfg.metric_connection_time then
             metric_connection_time = prometheus:gauge(
                 "nginx_connection_time_seconds",
@@ -170,7 +173,7 @@ data:
                 conn_label_schema
             )
         end
- 
+
         if cfg.metric_connection_time_histogram then
             metric_connection_time_histogram = prometheus:histogram(
                 "nginx_connection_time_seconds_histogram",
@@ -179,7 +182,7 @@ data:
                 cfg.histogram_buckets_conn_time
             )
         end
- 
+
         -- ============================================================
         -- EXPIRY TIMER
         -- Zeroes out stale gauges (request-level and connection-level)
@@ -196,10 +199,10 @@ data:
                 for _, key in ipairs(latency_dict:get_keys(cfg.expiry_scan_limit)) do
                     local entry = latency_dict:get(key)
                     if not entry then goto continue end
- 
+
                     local last_update, metric_type = entry:match("^([^|]+)|(.+)$")
                     last_update = tonumber(last_update)
- 
+
                     if last_update and now - last_update > cfg.expiry_window then
                         local labels = {}
                         -- key format: "type|label1|label2|..."
@@ -208,7 +211,7 @@ data:
                         for part in key:gmatch("[^|]+") do table.insert(parts, part) end
                         -- parts[1] = metric_type, rest = labels
                         for i = 2, #parts do table.insert(labels, parts[i]) end
- 
+
                         if metric_type == "req" then
                             if metric_latency      then metric_latency:set(0, labels)       end
                             if metric_request_size then metric_request_size:set(0, labels)  end
@@ -217,10 +220,10 @@ data:
                             if metric_connection_requests then metric_connection_requests:set(0, labels) end
                             if metric_connection_time     then metric_connection_time:set(0, labels)     end
                         end
- 
+
                         latency_dict:delete(key)
                     end
- 
+
                     ::continue::
                 end
                 local ok, err = ngx.timer.at(5, reset_expired_metrics)
@@ -229,13 +232,13 @@ data:
             local ok, err = ngx.timer.at(5, reset_expired_metrics)
             if not ok then ngx.log(ngx.ERR, "Failed to start reset timer: ", err) end
         end
- 
+
         _G._metrics_cfg = cfg
     }
- 
+
     log_by_lua_block {
         local cfg = _G._metrics_cfg
- 
+
         local function get_client_subnet(addr)
             if not addr then return "unknown" end
             local ip = addr:match("^%s*([^,]+)"):match("^%s*(.-)%s*$")
@@ -249,18 +252,19 @@ data:
             -- Public IPs: /16 is enough, avoids high cardinality
             return a .. "." .. b .. ".0.0"
         end
- 
-        local function build_labels(method, route, status, client_subnet)
+
+        local function build_labels(method, route, status, client_subnet, host)
             local l = {}
             if cfg.label_method            then table.insert(l, method)        end
             if cfg.label_route             then table.insert(l, route)         end
             if cfg.label_status            then table.insert(l, status)        end
             if cfg.label_client_subnet     then table.insert(l, client_subnet) end
+            if cfg.label_host              then table.insert(l, host)          end
             if cfg.label_app               then table.insert(l, cfg.app)       end
             if cfg.label_namespace         then table.insert(l, cfg.namespace) end
             return l
         end
- 
+
         local function is_param_segment(seg)
             if #seg > cfg.sanitize_max_segment_len then
                 return true
@@ -285,22 +289,42 @@ data:
             end
             return false
         end
- 
+
+        -- classify $host into: real domain (unchanged), "$kubernetes" (IP inside
+        -- cfg.cluster_ip_prefix), or "$ip" (any other IPv4/IPv6 literal). Keeps
+        -- the host label bounded instead of one series per pod/service IP.
+        local function classify_host(h)
+            if not h then return h end
+            local hostpart = h:match("^([^:]+):?%d*$") or h
+            if hostpart:match("^%d+%.%d+%.%d+%.%d+$") then
+                if cfg.cluster_ip_prefix and hostpart:sub(1, #cfg.cluster_ip_prefix) == cfg.cluster_ip_prefix then
+                    return "$kubernetes"
+                end
+                return "$ip"
+            end
+            -- loose IPv6 literal check
+            if hostpart:match("^[%x:]+$") and hostpart:find(":") then
+                return "$ip"
+            end
+            return h
+        end
+
         local method          = ngx.var.request_method or "UNKNOWN"
         local status          = ngx.var.status or "000"
         local req_time        = tonumber(ngx.var.request_time) or 0
         local req_size        = tonumber(ngx.var.request_length) or 0
         local res_size        = tonumber(ngx.var.body_bytes_sent) or 0
         local client_subnet   = cfg.label_client_subnet and get_client_subnet(ngx.var.http_x_forwarded_for or ngx.var.remote_addr) or nil
- 
+        local host            = cfg.label_host and classify_host(ngx.var.host) or nil
+
         -- connection-level values (no route/method/status labels)
         local conn_reqs         = tonumber(ngx.var.connection_requests) or 1
         local conn_time         = tonumber(ngx.var.connection_time) or 0
         local conn_label_values = {cfg.app, cfg.namespace}
- 
+
         -- strip query string, collapse duplicate slashes
         local path = (ngx.var.request_uri or "/"):match("^[^?]*"):gsub("//+", "/")
- 
+
         local segments = {}
         for seg in path:gmatch("[^/]+") do
             if is_param_segment(seg) then
@@ -311,74 +335,74 @@ data:
                 table.insert(segments, seg)
             end
         end
- 
+
         local route = "/" .. table.concat(segments, "/")
         if #route > 1 and route:sub(-1) == "/" then route = route:sub(1, -2) end
- 
-        local labels = build_labels(method, route, status, client_subnet)
- 
+
+        local labels = build_labels(method, route, status, client_subnet, host)
+
         -- ── request-level metrics ────────────────────────────────────
- 
+
         if metric_requests then
             metric_requests:inc(1, labels)
         end
- 
+
         if metric_latency then
             metric_latency:set(req_time, labels)
         end
- 
+
         if metric_latency_histogram then
             metric_latency_histogram:observe(req_time, labels)
         end
- 
+
         if metric_request_size then
             metric_request_size:set(req_size, labels)
         end
- 
+
         if metric_request_size_histogram then
             metric_request_size_histogram:observe(req_size, labels)
         end
- 
+
         if metric_response_size then
             metric_response_size:set(res_size, labels)
         end
- 
+
         if metric_response_size_histogram then
             metric_response_size_histogram:observe(res_size, labels)
         end
- 
+
         -- single expiry marker covering all three req-scoped gauges above.
         -- fixes a bug where the marker was only written inside `if metric_latency`,
         -- so request/response size gauges never expired if latency was disabled.
         if metric_latency or metric_request_size or metric_response_size then
             ngx.shared.custom_metrics:set("req|" .. table.concat(labels, "|"), ngx.now() .. "|req")
         end
- 
+
         -- ── connection-level metrics ─────────────────────────────────
- 
+
         if metric_connection_requests then
             metric_connection_requests:set(conn_reqs, conn_label_values)
         end
- 
+
         if metric_connection_requests_histogram then
             metric_connection_requests_histogram:observe(conn_reqs, conn_label_values)
         end
- 
+
         if metric_connection_time then
             metric_connection_time:set(conn_time, conn_label_values)
         end
- 
+
         if metric_connection_time_histogram then
             metric_connection_time_histogram:observe(conn_time, conn_label_values)
         end
- 
+
         -- single expiry marker covering both conn-scoped gauges above.
         -- fixes a bug where the marker was only written inside `if metric_connection_requests`,
         -- so connection_time never expired if connection_requests was disabled.
         if metric_connection_requests or metric_connection_time then
             ngx.shared.custom_metrics:set("conn|" .. table.concat(conn_label_values, "|"), ngx.now() .. "|conn")
         end
- 
+
         if metric_connections then
             metric_connections:set(ngx.var.connections_active  or 0, {"active",  cfg.app, cfg.namespace})
             metric_connections:set(ngx.var.connections_reading or 0, {"reading", cfg.app, cfg.namespace})
