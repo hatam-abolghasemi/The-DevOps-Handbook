@@ -46,6 +46,7 @@ data:
             label_namespace                         = false,
             label_client_subnet                     = false,   -- remote_addr as x.x.x.0/24
             label_host                              = true,
+            label_mode                              = true,    -- 0 = reverse-proxy/incoming, 1 = forward-proxy/outgoing
 
             -- route sanitization thresholds
             sanitize_pure_numeric                   = true,   -- /users/123
@@ -68,6 +69,7 @@ data:
             if cfg.label_host              then table.insert(l, "host")             end
             if cfg.label_app               then table.insert(l, "app")              end
             if cfg.label_namespace         then table.insert(l, "namespace")        end
+            if cfg.label_mode              then table.insert(l, "mode")             end
             return l
         end
 
@@ -253,13 +255,14 @@ data:
             return a .. "." .. b .. ".0.0"
         end
 
-        local function build_labels(method, route, status, client_subnet, host)
+        local function build_labels(method, route, status, client_subnet, host, mode)
             local l = {}
             if cfg.label_method            then table.insert(l, method)        end
             if cfg.label_route             then table.insert(l, route)         end
             if cfg.label_status            then table.insert(l, status)        end
             if cfg.label_client_subnet     then table.insert(l, client_subnet) end
             if cfg.label_host              then table.insert(l, host)          end
+            if cfg.label_mode              then table.insert(l, mode)          end
             if cfg.label_app               then table.insert(l, cfg.app)       end
             if cfg.label_namespace         then table.insert(l, cfg.namespace) end
             return l
@@ -290,15 +293,18 @@ data:
             return false
         end
 
-        -- classify $host into: real domain (unchanged), "$kubernetes" (IP inside
+        -- classify $host into: real domain (unchanged), "kubernetes" (IP inside
         -- cfg.cluster_ip_prefix), or "$ip" (any other IPv4/IPv6 literal). Keeps
         -- the host label bounded instead of one series per pod/service IP.
         local function classify_host(h)
             if not h then return h end
             local hostpart = h:match("^([^:]+):?%d*$") or h
+            if hostpart == "127.0.0.1" or hostpart == "localhost" then
+                return "localhost"
+            end
             if hostpart:match("^%d+%.%d+%.%d+%.%d+$") then
                 if cfg.cluster_ip_prefix and hostpart:sub(1, #cfg.cluster_ip_prefix) == cfg.cluster_ip_prefix then
-                    return "$kubernetes"
+                    return "kubernetes"
                 end
                 return "$ip"
             end
@@ -316,6 +322,7 @@ data:
         local res_size        = tonumber(ngx.var.body_bytes_sent) or 0
         local client_subnet   = cfg.label_client_subnet and get_client_subnet(ngx.var.http_x_forwarded_for or ngx.var.remote_addr) or nil
         local host            = cfg.label_host and classify_host(ngx.var.host) or nil
+        local mode            = cfg.label_mode and (ngx.var.request_mode or "0") or nil
 
         -- connection-level values (no route/method/status labels)
         local conn_reqs         = tonumber(ngx.var.connection_requests) or 1
@@ -339,7 +346,7 @@ data:
         local route = "/" .. table.concat(segments, "/")
         if #route > 1 and route:sub(-1) == "/" then route = route:sub(1, -2) end
 
-        local labels = build_labels(method, route, status, client_subnet, host)
+        local labels = build_labels(method, route, status, client_subnet, host, mode)
 
         -- ── request-level metrics ────────────────────────────────────
 
@@ -413,6 +420,7 @@ data:
     server {
       listen 80;
       location / {
+        set           $request_mode 0;   -- reverse-proxy / incoming
         fastcgi_pass  127.0.0.1:9000;
         fastcgi_param SCRIPT_FILENAME /var/www/html/index.php;
         include       fastcgi_params;
@@ -423,6 +431,25 @@ data:
         }
         access_log off;
       }
+    }
+    server {
+        listen                        127.0.0.1:3128;
+        resolver                      10.233.0.3 valid=10s;
+        resolver_timeout              5s;
+
+        proxy_connect;
+        proxy_connect_allow           all;
+        proxy_connect_connect_timeout 10s;
+        proxy_connect_read_timeout    10s;
+        proxy_connect_send_timeout    10s;
+        access_log                    /dev/stdout egress_log;
+
+        location / {
+            set $request_mode         1;   -- forward-proxy / outgoing
+            proxy_pass                http://$http_host$request_uri;
+            proxy_set_header          Host $http_host;
+            access_log                /dev/stdout egress_log;
+        }
     }
 ---
 apiVersion: v1
