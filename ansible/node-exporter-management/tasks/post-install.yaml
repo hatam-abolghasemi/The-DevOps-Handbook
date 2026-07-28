@@ -8,7 +8,7 @@
 
 - name: Verify that node-exporter is listening on port {{ node_exporter_port }}
   ansible.builtin.wait_for:
-    host: localhost
+    host: "{{ ansible_host }}"
     port: "{{ node_exporter_port }}"
     state: started
     timeout: 5

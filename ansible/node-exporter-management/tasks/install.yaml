@@ -43,6 +43,12 @@
     src: ./node-exporter.service.j2
     dest: "{{ node_exporter_service_file }}"
     mode: '0644'
+  register: node_exporter_unit_file
+
+- name: Reload systemd daemon if unit file changed
+  ansible.builtin.systemd:
+    daemon_reload: yes
+  when: node_exporter_unit_file.changed
 
 - name: Ensure node-exporter service is enabled and started
   ansible.builtin.systemd:
