@@ -418,9 +418,9 @@ data:
         end
     }
     server {
+      set $request_mode             0;
       listen 80;
       location / {
-        set           $request_mode 0;
         fastcgi_pass  127.0.0.1:9000;
         fastcgi_param SCRIPT_FILENAME /var/www/html/index.php;
         include       fastcgi_params;
@@ -434,6 +434,7 @@ data:
       }
     }
     server {
+        set $request_mode             1;
         listen                        127.0.0.1:3128;
         resolver                      10.233.0.3 valid=10s;
         resolver_timeout              5s;
@@ -446,7 +447,6 @@ data:
         access_log                    /dev/stdout egress_log;
 
         location / {
-            set $request_mode         1;
             proxy_pass                http://$http_host$request_uri;
             proxy_set_header          Host $http_host;
             access_log                /dev/stdout egress_log;
