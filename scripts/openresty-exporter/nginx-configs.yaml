@@ -420,12 +420,13 @@ data:
     server {
       listen 80;
       location / {
-        set           $request_mode 0;   -- reverse-proxy / incoming
+        set           $request_mode 0;
         fastcgi_pass  127.0.0.1:9000;
         fastcgi_param SCRIPT_FILENAME /var/www/html/index.php;
         include       fastcgi_params;
       }
       location = /metrics {
+        set           $request_mode 0;
         content_by_lua_block {
           prometheus:collect()
         }
@@ -445,7 +446,7 @@ data:
         access_log                    /dev/stdout egress_log;
 
         location / {
-            set $request_mode         1;   -- forward-proxy / outgoing
+            set $request_mode         1;
             proxy_pass                http://$http_host$request_uri;
             proxy_set_header          Host $http_host;
             access_log                /dev/stdout egress_log;
