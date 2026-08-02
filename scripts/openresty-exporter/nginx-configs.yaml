@@ -418,15 +418,14 @@ data:
         end
     }
     server {
-      set $request_mode             0;
-      listen 80;
+      set                             $request_mode 0;
+      listen                          80;
       location / {
-        fastcgi_pass  127.0.0.1:9000;
-        fastcgi_param SCRIPT_FILENAME /var/www/html/index.php;
-        include       fastcgi_params;
+        fastcgi_pass                  127.0.0.1:9000;
+        fastcgi_param                 SCRIPT_FILENAME /var/www/html/index.php;
+        include                       fastcgi_params;
       }
       location = /metrics {
-        set           $request_mode 0;
         content_by_lua_block {
           prometheus:collect()
         }
@@ -434,7 +433,7 @@ data:
       }
     }
     server {
-        set $request_mode             1;
+        set                           $request_mode 1;
         listen                        127.0.0.1:3128;
         resolver                      10.233.0.3 valid=10s;
         resolver_timeout              5s;
@@ -444,12 +443,13 @@ data:
         proxy_connect_connect_timeout 10s;
         proxy_connect_read_timeout    10s;
         proxy_connect_send_timeout    10s;
-        access_log                    /dev/stdout egress_log;
 
         location / {
-            proxy_pass                http://$http_host$request_uri;
+            proxy_pass                $scheme://$http_host$request_uri;
             proxy_set_header          Host $http_host;
-            access_log                /dev/stdout egress_log;
+            proxy_http_version        1.1;
+            proxy_set_header          Connection "";
+            access_log                off;
         }
     }
 ---
